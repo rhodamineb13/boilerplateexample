@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  godocker:
+    container_name: godocker
+    build: .
+    ports:
+      - "8080"
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: "postgres"
+      PGUSER: "postgres"
+      POSTGRES_PASSWORD: "password"
+    healthcheck:
+      test: ["CMD-SHELL", "-c", "pg_isready"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "70:70"
+    depends_on:
+      - godocker
+    restart: unless-stopped
