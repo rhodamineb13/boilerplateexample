@@ -1,8 +1,6 @@
 package database
 
-import "godocker/internal/models/entities"
-
-func Migrate(entities []entities.Entity) {
+func Migrate(entities ...any) {
 	if err := DB.AutoMigrate(entities); err != nil {
 		panic(err)
 	}

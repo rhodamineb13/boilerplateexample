@@ -1,8 +1,8 @@
-package repository
+package backOfficeRepository
 
 import (
 	"context"
-	"godocker/internal/models/entities"
+	backOfficeEntities "godocker/internal/backoffice/models/entities"
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"gorm.io/gorm"
@@ -15,7 +15,7 @@ const (
 	MongoDB
 )
 
-type CRUD[T entities.Entity] interface {
+type CRUD[T backOfficeEntities.Entity] interface {
 	Create(context.Context, *T) error
 	Update(context.Context, *T) error
 	Delete(context.Context, uint) error
@@ -23,25 +23,25 @@ type CRUD[T entities.Entity] interface {
 	GetByID(context.Context, uint) (*T, error)
 }
 
-type BaseRepository[T entities.Entity] interface {
+type BaseRepository[T backOfficeEntities.Entity] interface {
 	CRUD[T]
 }
 
-type sqlRepository[T entities.Entity] struct {
+type sqlRepository[T backOfficeEntities.Entity] struct {
 	db *gorm.DB
 }
 
-type mongoRepository[T entities.Entity] struct {
+type mongoRepository[T backOfficeEntities.Entity] struct {
 	db *mongo.Client
 }
 
-func NewSQLRepository[T entities.Entity](db *gorm.DB) *sqlRepository[T] {
+func NewSQLRepository[T backOfficeEntities.Entity](db *gorm.DB) *sqlRepository[T] {
 	return &sqlRepository[T]{
 		db: db,
 	}
 }
 
-func NewMongoRepository[T entities.Entity](db *mongo.Client) *mongoRepository[T] {
+func NewMongoRepository[T backOfficeEntities.Entity](db *mongo.Client) *mongoRepository[T] {
 	return &mongoRepository[T]{
 		db: db,
 	}

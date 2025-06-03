@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: FSAlbert Regular;
   line-height: 1.5;
   font-weight: 400;
 
@@ -35,24 +35,6 @@ h1 {
   line-height: 1.1;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -65,4 +47,14 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+@font-face {
+    font-family: "FSAlbert Regular";
+    src: url("https://db.onlinewebfonts.com/t/db3235d0f0b00c494fb4b36d8500ae7a.eot");
+    src: url("https://db.onlinewebfonts.com/t/db3235d0f0b00c494fb4b36d8500ae7a.eot?#iefix")format("embedded-opentype"),
+    url("https://db.onlinewebfonts.com/t/db3235d0f0b00c494fb4b36d8500ae7a.woff2")format("woff2"),
+    url("https://db.onlinewebfonts.com/t/db3235d0f0b00c494fb4b36d8500ae7a.woff")format("woff"),
+    url("https://db.onlinewebfonts.com/t/db3235d0f0b00c494fb4b36d8500ae7a.ttf")format("truetype"),
+    url("https://db.onlinewebfonts.com/t/db3235d0f0b00c494fb4b36d8500ae7a.svg#FSAlbert Regular")format("svg");
 }

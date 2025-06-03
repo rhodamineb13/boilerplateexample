@@ -1,8 +1,8 @@
-package repository
+package frontOfficeRepository
 
 import (
 	"context"
-	"godocker/internal/models/entities"
+	"godocker/internal/frontoffice/models/entities"
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"gorm.io/gorm"
