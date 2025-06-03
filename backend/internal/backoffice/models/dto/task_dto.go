@@ -1,7 +1,7 @@
 package backOfficeDTO
 
 type TaskDTO struct {
-	TaskId        string        `json:"task_id"`
+	TaskId        string        `json:"task_id,omitempty"`
 	ApplicationId string        `json:"application_id"`
 	Description   string        `json:"description"`
 	Client        TaskClientDTO `json:"client"`
@@ -9,7 +9,7 @@ type TaskDTO struct {
 }
 
 type TaskClientDTO struct {
-	ClientId            string `json:"client_id"`
+	ClientId            string `json:"client_id,omitempty"`
 	ClientName          string `json:"client_name"`
 	ClientAddress       string `json:"client_address"`
 	ClientSubdistrict   string `json:"client_subdistrict"`
@@ -20,7 +20,7 @@ type TaskClientDTO struct {
 }
 
 type TaskEmployeeDTO struct {
-	EmployeeId   string    `json:"employee_id"`
+	EmployeeId   string    `json:"employee_id,omitempty"`
 	EmployeeName string    `json:"employee_name"`
 	Tasks        []TaskDTO `json:"tasks"`
 }
