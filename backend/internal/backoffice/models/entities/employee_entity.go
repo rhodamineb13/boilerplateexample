@@ -11,3 +11,11 @@ type Employee struct {
 	UpdatedAt   time.Time  `gorm:"type:timestamp;not null;default:NOW()"`
 	DeletedAt   *time.Time `gorm:"type:timestamp"`
 }
+
+func (e Employee) GetID() string {
+	return e.Id
+}
+
+func (e Employee) TableName() string {
+	return "employees"
+}

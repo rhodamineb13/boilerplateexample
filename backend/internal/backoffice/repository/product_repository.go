@@ -3,9 +3,8 @@ package backOfficeRepository
 import (
 	"context"
 	backOfficeEntities "godocker/internal/backoffice/models/entities"
-
-	"go.mongodb.org/mongo-driver/v2/mongo"
-	"gorm.io/gorm"
+	sqlDatabase "godocker/internal/database/sql_database"
+	"godocker/internal/repository"
 )
 
 type ProductRepository interface {
@@ -13,19 +12,17 @@ type ProductRepository interface {
 }
 
 type productRepository struct {
-	BaseRepository[backOfficeEntities.Product]
+	repository repository.BaseRepository[backOfficeEntities.Product]
 }
 
-func NewProductRepository(driver Driver) ProductRepository {
+func NewProductRepository(driver repository.Driver) ProductRepository {
 	switch driver {
-	case Postgres:
+	case repository.SQL:
 		return &productRepository{
-			NewSQLRepository[backOfficeEntities.Product](&gorm.DB{}),
+			repository: repository.NewSQLRepository[backOfficeEntities.Product](sqlDatabase.DB),
 		}
-	case MongoDB:
-		return &productRepository{
-			NewMongoRepository[backOfficeEntities.Product](&mongo.Client{}),
-		}
+	case repository.MongoDB:
+		return &productRepository{}
 	default:
 		panic("undefined driver")
 	}

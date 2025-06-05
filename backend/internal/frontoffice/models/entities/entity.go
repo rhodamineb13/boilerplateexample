@@ -1,6 +1,6 @@
 package entities
 
 type Entity interface {
-	GetID() uint
+	GetID() string
 	TableName() string
 }

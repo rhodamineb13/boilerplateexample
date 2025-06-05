@@ -3,7 +3,7 @@ package entities
 import "time"
 
 type Product struct {
-	Id          uint
+	Id          string
 	Name        string
 	CategoryId  uint
 	Description string
@@ -14,7 +14,7 @@ type Product struct {
 	DeletedAt   time.Time
 }
 
-func (p Product) GetID() uint {
+func (p Product) GetID() string {
 	return p.Id
 }
 

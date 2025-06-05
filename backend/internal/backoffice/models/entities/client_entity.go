@@ -23,3 +23,11 @@ type Client struct {
 	UpdatedAt       time.Time  `gorm:"type:timestamp;not null;default:NOW()"`
 	DeletedAt       *time.Time `gorm:"type:timestamp"`
 }
+
+func (c Client) GetID() string {
+	return c.Id
+}
+
+func (c Client) TableName() string {
+	return "clients"
+}

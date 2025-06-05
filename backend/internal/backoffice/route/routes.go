@@ -12,11 +12,8 @@ func AddRoute(r *gin.Engine) {
 	b := r.Group("/backoffice")
 	b.Use()
 
-	task := b.Group("/task")
-	task.POST("", taskHandler.AssignTask)
-	task.GET("", taskHandler.ListTaskById)
-
-	form := b.Group("/form")
-	form.POST("/post-form")
-
+	task := b.Group("/tasks")
+	task.POST("/assign", taskHandler.AssignTask)
+	task.POST("/done", taskHandler.SetDone)
+	task.GET("", taskHandler.ListTaskByEmployee)
 }

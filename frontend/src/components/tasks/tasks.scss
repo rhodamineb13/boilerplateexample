@@ -1,0 +1,52 @@
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.task-item {
+    border-radius: 10px;
+    height: 120px;
+    padding: 0; // Remove padding to control internal spacing precisely
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column; // Change to column layout
+    background-color: #fff;
+    overflow: hidden; // Prevent content from breaking rounded corners
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.8s ease,
+                transform 0.8s ease // Smooth transition for shadow effect
+}
+
+.task-item:hover {
+    cursor: pointer;
+    box-shadow: 0 12px 12px rgba(0, 0, 0, 0.3); // Slightly larger shadow on hover
+    transform: scale(1.04);
+}
+
+.task-title-container {
+    height: 50%; // Exactly half of task-item height
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.task-info-container {
+    height: 50%; // Exactly half of task-item height
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: none; // Remove border as per original request
+}
+
+.task-description,
+.task-priority {
+    margin: 0; // Remove default margins
+    line-height: 1.2; // Tighter line spacing
+}
+
+.task-description {
+    margin-bottom: 2px; // Minimal spacing between description and priority
+}

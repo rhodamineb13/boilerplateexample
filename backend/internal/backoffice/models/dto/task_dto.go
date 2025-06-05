@@ -21,6 +21,5 @@ type TaskClientDTO struct {
 
 type TaskEmployeeDTO struct {
 	EmployeeId   string    `json:"employee_id,omitempty"`
-	EmployeeName string    `json:"employee_name"`
-	Tasks        []TaskDTO `json:"tasks"`
+	Tasks        []*TaskDTO `json:"tasks"`
 }

@@ -1,0 +1,12 @@
+.profile-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 10fr;
+  padding: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.profile-dashboard .profile-info {
+    margin-top: 20px;
+    margin-left: 60px;
+}
+

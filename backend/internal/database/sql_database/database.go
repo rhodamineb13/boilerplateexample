@@ -1,4 +1,4 @@
-package database
+package sqlDatabase
 
 import (
 	"gorm.io/driver/postgres"
