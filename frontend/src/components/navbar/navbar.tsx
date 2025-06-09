@@ -1,10 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import { Navbar, Container, Nav, Button } from 'react-bootstrap';
 import { useNavigate } from "react-router-dom";
 import logo from '../../assets/baf.avif'
 import './navbar.scss';
 
 export default function NavbarComponent() : React.JSX.Element {
+    const [currentUser, setCurrentUser] = useState<string>("abc");
     const navigate = useNavigate();
 
     return (
@@ -32,11 +33,19 @@ export default function NavbarComponent() : React.JSX.Element {
               <Nav.Link href="/notifications">
                 <i className="fa-solid fa-bell"></i>
               </Nav.Link>
-              <Nav.Link href="/login" className="d-flex align-items-center">
+              { !currentUser && <Nav.Link href="/login" className="d-flex align-items-center">
                 <Button variant="primary" className="login-btn">
                   Login
                 </Button>
-              </Nav.Link>
+              </Nav.Link> }
+              { currentUser && <Nav.Link className="d-flex align-items-center">
+                <Button variant="primary" className="login-btn" onClick={() => {
+                  setCurrentUser("");
+                  navigate("/login");
+                }}>
+                  Logout
+                </Button>
+              </Nav.Link> }
             </Nav>
           </Navbar.Collapse>
         </Container>

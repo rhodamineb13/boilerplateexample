@@ -7,7 +7,6 @@ import RedirectHome from './pages/redirect-home/redirect-home.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    
     <App />
   </BrowserRouter>,
 )
