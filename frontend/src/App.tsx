@@ -2,8 +2,6 @@ import { Container } from 'react-bootstrap'
 import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css'
 import MainPage from './pages/main/main-page';
-import Browse from './pages/browse/browse';
-import About from './pages/about/about';
 import TaskPage from './pages/task-page/task-page';
 import NotFound from './pages/not-found/not-found';
 import {useState, useEffect, useRef} from 'react';

@@ -1,15 +1,8 @@
 import { JSX }  from 'react';
 import './tasks.scss'; // Assuming you have a CSS file for styling
 import { NavigateFunction, useNavigate } from 'react-router-dom';
+import { TaskModel } from '../../models/tasks_dto';
 
-export interface TaskModel {
-    id: string;
-    title: string;
-    description: string;
-    completed: boolean;
-    dueDate: string; // ISO date string
-    priority: 'low' | 'medium' | 'high';
-}
 
 export interface TaskProps {
     data : TaskModel[];

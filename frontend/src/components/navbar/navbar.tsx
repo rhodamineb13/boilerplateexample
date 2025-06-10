@@ -27,7 +27,7 @@ export default function NavbarComponent() : React.JSX.Element {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="/submit-form">Submit Form</Nav.Link>
+              <Nav.Link href="/assign-task">Assign Task</Nav.Link>
             </Nav>
             <Nav className="right-nav align-items-center gap-5 d-none d-lg-flex">
               <Nav.Link href="/notifications">

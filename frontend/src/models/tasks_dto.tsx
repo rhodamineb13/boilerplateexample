@@ -1,5 +1,7 @@
-export interface Tasks {
+export interface TaskModel {
     id : string,
+    title: string,
+    employeeId : string
     client_name : string,
     description : string,
     address : string,
