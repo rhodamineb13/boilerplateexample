@@ -94,3 +94,29 @@
     }
   }
 }
+
+.custom-offcanvas {
+  font-family: 'FSAlbert Regular', sans-serif !important;
+  width: 250px !important;
+
+  .offcanvas-menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px; // or whatever height you prefer
+  }
+
+  .offcanvas-menu a {
+    font-family: 'FSAlbert Regular', sans-serif !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+  }
+
+  .offcanvas-menu:hover {
+    cursor: pointer;
+  }
+}
+
+svg {
+  fill: rgb(0, 47, 95) !important;
+}

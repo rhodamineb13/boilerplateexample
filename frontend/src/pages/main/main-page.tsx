@@ -1,62 +1,131 @@
-import { JSX } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import './main-page.scss'; // Assuming you have a CSS file for styling
-import profilePic from '../../assets/default-profile-placeholder-mfby2k0rliz1szsn.png'
-import Tasks, { TaskProps, TaskModel } from '../../components/tasks/tasks';
+import { Dropdown, Table } from 'react-bootstrap';
+import { AssignTask, GetAllTasks } from '../../api/tasks';
+import { TaskDTO } from '../../models/dto/tasks_dto';
 
 export default function MainPage() : JSX.Element {
+    const [tasks, setTasks] = useState<TaskDTO[]>([])
+    const [assignedEmployee, setAssignedEmployee] = useState<string>("");
+    
+
+    useEffect(() => {
+        GetAllTasks().then((t) => setTasks(t))
+    }, [])
+
+    const handleSave = () => {
+        console.log("clicked bro")
+        try {
+            async () => await AssignTask("task_id", assignedEmployee)
+        }
+        catch (err) {
+            alert(err)
+        }
+    }
 
     return <>
-    <div className="profile-dashboard">
-        <div className="profile-picture">
-            <img src={profilePic} alt="Profile" width={'125px'} />
+    <div className="task-dashboard">
+        <h2 style={{textAlign: "center"}}>TASK DASHBOARD</h2>
+        <div className="tasks-table" style={{
+            display: 'table',
+            margin: '60px auto'
+        }}>
+            <Table>
+                <colgroup>
+                <col />
+                <col style={{width: '20em'}} />
+                <col style={{width: '15em'}} />
+                <col style={{width: '15em'}} />
+                <col style={{width: '10em'}} />
+                <col style={{width: '10em'}} />
+                <col style={{width: '10em'}}/>
+                <col style={{width: '15em'}} />
+                <col />
+                <col style={{width: '20em'}} />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Description</th>
+                        <th>Client Name</th>
+                        <th>Client Address</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Assigned To</th>
+                        <th>Due Date</th>
+                        <th>Priority</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                        1.
+                    </td>
+                    <td>
+                        Pinjaman Kredit Mobil Avanza Butut Tahun 2008
+                    </td>
+                    <td>
+                        John Smith
+                    </td>
+                    <td>
+                        Jl. Jalan, no. 123 RT 004 RW 005, Ngarang Bebas
+                    </td>
+                    <td>
+                        -34.2210021
+                    </td>
+                    <td>
+                        144.801002
+                    </td>
+                    <td>
+                        Sudrajat 
+                    </td>
+                    <td>
+                        2025-08-17
+                    </td>
+                    <td>high</td>
+                    <td style={{display: 'flex'}}>
+                        <Dropdown onSelect={(_, e) => setAssignedEmployee((e.target as HTMLElement).innerText)}>
+                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                Dropdown Button
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu style={{width: '15em'}}>
+                                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        <i className="fa-solid fa-floppy-disk fa-2x" onClick={handleSave}></i>
+                    </td>
+                    </tr>
+                    {tasks.map((task : TaskDTO, idx : number) => (
+                    <tr>    
+                        <td>{idx}</td>
+                        <td>{task.description}</td>
+                        <td>{task.client_name}</td>
+                        <td>{task.client_address}</td>
+                        <td>{task.latitude}</td>
+                        <td>{task.longitude}</td>
+                        <td>{task.due_date}</td>
+                        <td>{task.priority}</td>
+                        <td style={{display: 'flex'}}>
+                            <Dropdown onSelect={(_, e) => setAssignedEmployee((e.target as HTMLElement).innerText)}>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    Dropdown Button
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu style={{width: '15em'}}>
+                                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <i className="fa-solid fa-floppy-disk fa-2x" onClick={handleSave}></i>
+                        </td>
+                    </tr>
+                    ))}
+                </tbody>
+            </Table>
         </div>
-        <div className="profile-info">
-            <h1 className="profile-name">JOHN DOE</h1>
-            <p className="profile-bio">Surveyor</p>
-        </div>
-    </div>
-    <div className="tasks-container">
-        <Tasks
-            data={[
-                {
-                    id: '1',
-                    title: 'Task 1',
-                    description: 'Description for Task 1',
-                    completed: false,
-                    dueDate: '2023-10-15T12:00:00Z',
-                    priority: 'high'
-                },
-                {
-                    id: '2',
-                    title: 'Task 2',
-                    description: 'Description for Task 2',
-                    completed: true,
-                    dueDate: '2023-10-16T12:00:00Z',
-                    priority: 'medium'
-                },
-                {
-                    id: '3',
-                    title: 'Task 3',
-                    description: 'Description for Task 3',
-                    completed: false,
-                    dueDate: '2023-10-17T12:00:00Z',
-                    priority: 'low'
-                },
-                {
-                    id: '4',
-                    title: 'Task 4',
-                    description: 'Description for Task 4',
-                    completed: false,
-                    dueDate: '2023-10-18T12:00:00Z',
-                    priority: 'high'
-                }
-            ]}
-            onTaskAdd={(task: TaskModel) => console.log('Task added:', task)}
-            onTaskUpdate={(task: TaskModel) => console.log('Task updated:', task)}
-            onTaskDelete={(taskId: string) => console.log('Task deleted:', taskId)}
-            onTaskComplete={(taskId: string, completed: boolean) => console.log('Task completed:', taskId, completed)}
-            onTaskFilter={(filter: 'all' | 'completed' | 'pending') => console.log('Task filter:', filter)}
-        />
-    </div>
+    </div>    
     </>
 }

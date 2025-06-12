@@ -44,7 +44,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 900 !important;
 }
 
-a, p, span, label {
+a, p, span, label, th, td {
   font-family: FSAlbert Regular, sans-serif !important;
   font-weight: 400 !important;
   font-size: 16px !important;

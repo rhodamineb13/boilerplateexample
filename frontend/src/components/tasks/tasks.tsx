@@ -1,13 +1,13 @@
 import { JSX }  from 'react';
 import './tasks.scss'; // Assuming you have a CSS file for styling
 import { NavigateFunction, useNavigate } from 'react-router-dom';
-import { TaskModel } from '../../models/tasks_dto';
+import { TaskDTO } from '../../models/dto/tasks_dto';
 
 
 export interface TaskProps {
-    data : TaskModel[];
-    onTaskAdd : (task: TaskModel) => void;
-    onTaskUpdate? : (task: TaskModel) => void;
+    data : TaskDTO[];
+    onTaskAdd? : (task: TaskDTO) => void;
+    onTaskUpdate? : (task: TaskDTO) => void;
     onTaskDelete? : (taskId: string) => void;
     onTaskComplete? : (taskId: string, completed: boolean) => void;
     onTaskFilter? : (filter: 'all' | 'completed' | 'pending') => void;
@@ -17,10 +17,7 @@ export default function Tasks(props : TaskProps) : JSX.Element {
     const navigate : NavigateFunction = useNavigate();
 
     return <>
-        <div className="tasks-container" style={{marginTop: '50px'}}>
-            <h2 style={{textAlign: 'center'}}>TASKS</h2>
-            <div className="task-list" style={{marginTop: '50px'}}>
-                {props.data.map(task => (
+       {props.data.map(task => (
                     <div className="task-item" key={task.id} onClick={() => navigate(`/tasks/${task.id}`)}>
                         <div className="task-title-container">
                             <h3 className="task-title">{task.title.toUpperCase()}</h3>
@@ -31,7 +28,5 @@ export default function Tasks(props : TaskProps) : JSX.Element {
                         </div>
                     </div>
                 ))}
-            </div>
-        </div>
     </>
 }

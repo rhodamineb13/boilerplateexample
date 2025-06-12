@@ -1,9 +1,10 @@
 import axios, { AxiosInstance, CreateAxiosDefaults } from 'axios';
 
 const config : CreateAxiosDefaults = {
-    baseURL: 'http://localhost:8080/public',
+    baseURL: 'http://localhost:8080/api',
     headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
     },
     withCredentials: true,
 }

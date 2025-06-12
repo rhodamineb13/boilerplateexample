@@ -1,6 +1,7 @@
 import { JSX, useEffect } from 'react';
 import './task-page.scss'; // Assuming you have a CSS file for styling
 import { Params, useParams } from 'react-router-dom';
+import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 
 export default function TaskPage(): JSX.Element {
@@ -17,9 +18,20 @@ export default function TaskPage(): JSX.Element {
     console.log(param)
     return (
         <div className="task-page">
-            <h1>Task Page: {param.taskId}</h1>
-            <p>This is the task page where you can manage your tasks.</p>
-            {/* Add your task management components here */}
+            <h1>Task Page: {param.id}</h1>
+            <div>
+                <Dropdown>
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        <a>Dropdown Buttona</a>
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                    </Dropdown.Menu>
+                    </Dropdown>
+            </div>
         </div>
     );
 }   

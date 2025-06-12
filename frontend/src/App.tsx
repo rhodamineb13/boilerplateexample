@@ -1,75 +1,78 @@
-import { Container } from 'react-bootstrap'
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { Container, Nav } from 'react-bootstrap'
+import { Location, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import './App.css'
 import MainPage from './pages/main/main-page';
-import TaskPage from './pages/task-page/task-page';
 import NotFound from './pages/not-found/not-found';
-import {useState, useEffect, useRef} from 'react';
 import NavbarComponent from './components/navbar/navbar';
 import Login from './pages/login/login';
-import RedirectHome from './pages/redirect-home/redirect-home';
-import SubmitForm from './pages/submit-form/submit-form';
+import TaskPage from './pages/task-page/task-page';
+import logo from "./assets/baf.png"
+import LoginPage from './pages/login/login';
 
 function App() {
-  const currentUser : string = "fasfafafa"
-  if (currentUser === "" || currentUser === null) {
+  const location : Location = useLocation();
+  const hideSidebar : boolean = location.pathname === "/login";
 
-  }
-  const [navbarHeight, setNavbarHeight] = useState(0);
-  const navbarRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const updateNavbarHeight = () => {
-      if (navbarRef.current) {
-        setNavbarHeight(navbarRef.current.offsetHeight);
-      }
-    };
-
-    // Initial measurement
-    updateNavbarHeight();
-    
-    // Add resize listener
-    window.addEventListener('resize', updateNavbarHeight);
-    
-    // Cleanup
-    return () => window.removeEventListener('resize', updateNavbarHeight);
-  }, []);
-
-  useEffect(()=>{
-    window.scrollTo(0,0);
-  },[])
-
-  return (
-    <>
-      <NavbarComponent />
-      <div className="inner-body" style={{ minHeight: `calc(100vh - ${navbarHeight}px - 7vh)` }}>
-        <Container style={{ maxWidth: 1280, margin: '0 auto', height: "100%" }}>
+  if (hideSidebar) {
+    return (
+      <div>
+        <NavbarComponent />
+        <Container fluid className="p-4">
           <Routes>
-            {/* Public route */}
-            <Route path="/login" element={<Login />} />
-            
-            {/* Protected routes */}
-            <Route path="/" element={
-              currentUser ? <RedirectHome /> : <Navigate to="/login" replace />
-            } />
-            <Route path="/home" element={
-              currentUser ? <MainPage /> : <Navigate to="/login" replace />
-            } />
-            <Route path="/tasks/:taskId" element={
-              currentUser ? <TaskPage /> : <Navigate to="/login" replace />
-            } />
-            <Route path="/submit-form" element={
-              currentUser ? <SubmitForm /> : <Navigate to="/login" replace />
-            } />
-            
-            {/* Catch-all routes */}
-            <Route path="*" element={
-              currentUser ? <NotFound /> : <Navigate to="/login" replace />
-            } />
+            <Route path="/login" element={<LoginPage />} />
           </Routes>
         </Container>
       </div>
-    </>
+    );
+  }
+
+  return (
+    <div className="d-flex">
+      {/* Fixed Sidebar */}
+      <div className="sidebar bg-light border-end" style={{
+        width: '250px', 
+        minHeight: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 1000,
+      }}>
+        <div className="p-3">
+          {/* Logo section */}
+          <div className="mb-4">
+            <img src={logo} width="120px" alt="Logo" className="mb-2" />
+          </div>
+          
+          {/* Navigation Links */}
+          <Nav className="flex-column gap-2">
+            <Nav.Link href="/home" className="sidebar-link">
+              Home
+            </Nav.Link>
+            <Nav.Link href="/surveyor" className="sidebar-link">
+              Surveyor
+            </Nav.Link>
+          </Nav>
+        </div>
+      </div>
+
+      {/* Main Content Area */}
+      <div className="main-content flex-grow-1" style={{marginLeft: '250px'}}>
+        {/* Your existing navbar - but simplified since sidebar handles main navigation */}
+        <NavbarComponent />
+        
+        {/* Page Content */}
+        <Container fluid className="p-4">
+          {/* Your router content goes here */}
+          <Routes>
+            <Route path="/home" element={<MainPage />} />
+            <Route path="/tasks/:id" element={<TaskPage />} />
+            <Route path="*" element={<NotFound />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="" element={<Navigate replace to="/login" />}/> 
+          </Routes>
+        </Container>
+      </div>
+    </div>
   );
 }
 
