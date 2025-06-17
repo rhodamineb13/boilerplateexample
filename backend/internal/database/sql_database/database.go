@@ -1,9 +1,12 @@
 package sqlDatabase
 
 import (
+	"fmt"
+	"godocker/internal/config"
+
+	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/driver/mysql"
 )
 
 var DB *gorm.DB
@@ -11,7 +14,7 @@ var DB *gorm.DB
 type Driver uint
 
 const (
-	Postgres uint = iota + 1
+	Postgres Driver = iota + 1
 	MySQL
 )
 
@@ -19,7 +22,7 @@ func Connect(driver Driver) {
 	var err error
 	switch driver {
 	case Driver(Postgres):
-		dsn := ""
+		dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", config.DATABASE_HOST, config.DATABASE_USER, config.DATABASE_PASS, config.DATABASE_NAME, config.DATABASE_PORT)
 		DB, err = gorm.Open(postgres.Open(dsn))
 		if err != nil {
 			panic(err)
@@ -30,5 +33,7 @@ func Connect(driver Driver) {
 		if err != nil {
 			panic(err)
 		}
+	default:
+		panic("undefined driver")
 	}
 }

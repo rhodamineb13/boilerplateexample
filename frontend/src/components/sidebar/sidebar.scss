@@ -1,0 +1,203 @@
+.sidebar {
+  margin-top: 60px;
+  background-color: #f8f9fa;
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  border-right: 1px solid #dee2e6;
+  transition: width 0.3s ease;
+  overflow: hidden;
+
+  .submenu-container {
+    transition: height 0.3s ease;
+    overflow: hidden;
+    
+    &.transitioning {
+      transition: height 0.3s ease;
+    }
+    
+    &:not(.expanded) {
+      .submenu {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+    }
+    
+    &.expanded {
+      .submenu {
+        opacity: 1;
+        transform: translateY(0);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+    }
+  }
+  
+  &.collapsed {
+    width: 60px;
+  }
+  
+  .sidebar-content {
+    padding: 1rem 0;
+  }
+  
+  .sidebar-link {
+    padding: 0;
+    color: #212529;
+    text-decoration: none;
+    position: relative;
+
+    &.transitioning {
+      .transition-icon {
+        transition: transform 0.3s ease;
+      }
+    }
+    
+    .link-content {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1.5rem;
+      transition: all 0.2s ease;
+      
+      i {
+        font-size: 1.2rem;
+        min-width: 24px;
+        text-align: center;
+        transition: all 0.3s ease;
+      }
+      
+      span {
+        margin-left: 12px;
+        white-space: nowrap;
+        transition: opacity 0.3s ease;
+      }
+    }
+    
+    &:hover .link-content {
+      background-color: #e7f5ff;
+      color: #0d6efd;
+    }
+    
+    // Active style only for main menu items
+    &.active .link-content {
+      background-color: rgb(15, 47, 95);
+      font-weight: 500;
+      color: #ffffff;
+      border-left: 3px solid rgb(15, 47, 95);
+    }
+    
+    // Bold style for active submenu items
+    &.active-sub .link-content {
+    .submenu-text {
+      font-weight: bold;
+      position: relative;
+      color: #0d6efd;
+      
+      // Add invisible bold text to reserve space
+        &::after {
+          content: attr(data-text);
+          font-weight: bold;
+          visibility: hidden;
+          display: block;
+          height: 0;
+          overflow: hidden;
+        }
+      }
+    }
+    
+    .tooltip {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #333;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-left: 10px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      z-index: 2000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      
+      &::before {
+        content: '';
+        position: absolute;
+        left: -5px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-right: 5px solid #333;
+      }
+    }
+    
+    &:hover .tooltip {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+  
+  .submenu {
+    padding-left: 20px;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  
+    
+    .sub-item {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      border-left: 2px solid #e9ecef;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      
+      // Active submenu item styling
+      .link-content {
+          .submenu-text {
+            // Reserve space for bold text
+            display: inline-block;
+            min-width: 100%;
+          }
+        }
+        
+        // Active submenu item styling
+        &.active-sub {
+          .link-content {
+            background-color: transparent;
+          }
+        }
+    }
+  }
+  
+  // Collapsed state styles
+  &.collapsed {
+    .sidebar-link {
+      .link-content {
+        justify-content: center;
+        padding: 0.75rem;
+        
+        span {
+          display: none;
+        }
+      }
+      
+      &:hover .link-content {
+        background-color: #e7f5ff;
+      }
+    }
+    
+    .submenu {
+      display: none;
+    }
+  }
+}

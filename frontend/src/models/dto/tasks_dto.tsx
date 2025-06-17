@@ -2,7 +2,6 @@ import { TaskPriority } from "../enums/tasks_priority_enums"
 
 export interface TaskDTO {
     id : string,
-    title: string,
     employeeId? : string
     client_name : string,
     description : string,
@@ -16,3 +15,4 @@ export interface TaskDTO {
 export interface AssignTaskDTO {
 
 }
+

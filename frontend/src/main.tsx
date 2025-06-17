@@ -4,9 +4,12 @@ import App from './App.tsx'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter } from 'react-router-dom';
 import RedirectHome from './pages/redirect-home/redirect-home.tsx';
+import { AuthProvider } from './context/auth_context.tsx';
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </BrowserRouter>,
 )

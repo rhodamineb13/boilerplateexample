@@ -40,7 +40,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: Brandon Grotesque Web Regular, sans-serif !important;
+  font-family: Brandon Grotesque Bold, sans-serif !important;
   font-weight: 900 !important;
 }
 
@@ -68,4 +68,16 @@ a, p, span, label, th, td {
     url("https://db.onlinewebfonts.com/t/70bd34e287f233c84a98d03a6d36dabf.woff")format("woff"),
     url("https://db.onlinewebfonts.com/t/70bd34e287f233c84a98d03a6d36dabf.ttf")format("truetype"),
     url("https://db.onlinewebfonts.com/t/70bd34e287f233c84a98d03a6d36dabf.svg#Brandon Grotesque Web Regular")format("svg");
+}
+
+@font-face {
+  font-family: "Brandon Grotesque";
+  src: url("./assets/fonts/Brandon_reg.otf")format("opentype");
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Brandon Grotesque Bold";
+  src: url("./assets/fonts/Brandon_bld.otf")format("opentype");
+  font-weight: bold;
 }

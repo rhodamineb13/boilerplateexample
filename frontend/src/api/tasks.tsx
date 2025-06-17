@@ -1,12 +1,19 @@
 import { AxiosResponse, AxiosError } from 'axios';
 import { TaskDTO } from '../models/dto/tasks_dto';
 import { client } from './api_client';
+import { PaginatedResponse } from '../models/dto/paginated_dto';
 
 
-
-export function GetAllTasks() : Promise<TaskDTO[]> {
-    return client.get("/tasks")
-    .then((res : AxiosResponse) => res.data as TaskDTO[])
+export function GetAllTasks(limit? : number, page? : number) : Promise<PaginatedResponse<TaskDTO>> {
+    return client.get("/api/tasks", {
+        params: {
+            limit: limit,
+            page: page,
+        }
+    })
+    .then((res : AxiosResponse) => {
+        return res.data.data as PaginatedResponse<TaskDTO>
+    })
     .catch((err : AxiosError) => {
         throw err;
     });

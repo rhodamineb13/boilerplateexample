@@ -2,7 +2,6 @@ package token
 
 import (
 	"fmt"
-	"godocker/internal/models/enums"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -11,14 +10,10 @@ import (
 // TokenService defines the interface for token operations.
 type JWTClaims struct {
 	Username string
-	Role     enums.EmployeeRole
 	*jwt.RegisteredClaims
 }
 
-func NewJWTToken(username string, role enums.EmployeeRole) *JWTClaims {
-	if (role != enums.Admin) && (role != enums.Surveyor) && (role != enums.BranchManager) {
-		return nil
-	} 
+func NewJWTToken(username string) *JWTClaims {
 	claims := &jwt.RegisteredClaims{
 		Issuer: "godocker",
 		ExpiresAt: &jwt.NumericDate{
@@ -27,16 +22,12 @@ func NewJWTToken(username string, role enums.EmployeeRole) *JWTClaims {
 	}
 	return &JWTClaims{
 		Username:         username,
-		Role:             role,
 		RegisteredClaims: claims,
 	}
 }
 
-func GenerateJWTToken(username string, role enums.EmployeeRole) (string, error) {
-	claims := NewJWTToken(username, role)
-	if claims == nil {
-		return "", fmt.Errorf("invalid role")
-	}
+func GenerateJWTToken(username string) (string, error) {
+	claims := NewJWTToken(username)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	secretKey := []byte("your-secret-key")
@@ -44,6 +35,7 @@ func GenerateJWTToken(username string, role enums.EmployeeRole) (string, error) 
 	if err != nil {
 		return "", err
 	}
+	fmt.Println("signedToken: ", signedToken)
 	return signedToken, nil
 }
 

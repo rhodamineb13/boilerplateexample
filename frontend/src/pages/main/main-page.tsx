@@ -1,131 +1,142 @@
-import { JSX, useEffect, useState } from 'react';
+import { JSX} from 'react';
 import './main-page.scss'; // Assuming you have a CSS file for styling
-import { Dropdown, Table } from 'react-bootstrap';
-import { AssignTask, GetAllTasks } from '../../api/tasks';
-import { TaskDTO } from '../../models/dto/tasks_dto';
+import { Carousel} from 'react-bootstrap';
+import tanks from '../../assets/tanks.png'
 
-export default function MainPage() : JSX.Element {
-    const [tasks, setTasks] = useState<TaskDTO[]>([])
-    const [assignedEmployee, setAssignedEmployee] = useState<string>("");
-    
 
-    useEffect(() => {
-        GetAllTasks().then((t) => setTasks(t))
-    }, [])
 
-    const handleSave = () => {
-        console.log("clicked bro")
-        try {
-            async () => await AssignTask("task_id", assignedEmployee)
-        }
-        catch (err) {
-            alert(err)
-        }
-    }
-
-    return <>
-    <div className="task-dashboard">
-        <h2 style={{textAlign: "center"}}>TASK DASHBOARD</h2>
-        <div className="tasks-table" style={{
-            display: 'table',
-            margin: '60px auto'
+export default function MainPage(): JSX.Element {
+  return (
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
+      <h1 style={{ margin: '20px auto', textAlign: 'center' }}>MAIN PAGE</h1>
+      
+      <div className="carousel-news" style={{ marginTop: '40px' }}>
+        <div className="carousel-news-title" style={{ 
+          marginBottom: '20px', 
+          borderBottom: '2px solid #e0e0e0',
+          paddingBottom: '10px'
         }}>
-            <Table>
-                <colgroup>
-                <col />
-                <col style={{width: '20em'}} />
-                <col style={{width: '15em'}} />
-                <col style={{width: '15em'}} />
-                <col style={{width: '10em'}} />
-                <col style={{width: '10em'}} />
-                <col style={{width: '10em'}}/>
-                <col style={{width: '15em'}} />
-                <col />
-                <col style={{width: '20em'}} />
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Description</th>
-                        <th>Client Name</th>
-                        <th>Client Address</th>
-                        <th>Latitude</th>
-                        <th>Longitude</th>
-                        <th>Assigned To</th>
-                        <th>Due Date</th>
-                        <th>Priority</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                        1.
-                    </td>
-                    <td>
-                        Pinjaman Kredit Mobil Avanza Butut Tahun 2008
-                    </td>
-                    <td>
-                        John Smith
-                    </td>
-                    <td>
-                        Jl. Jalan, no. 123 RT 004 RW 005, Ngarang Bebas
-                    </td>
-                    <td>
-                        -34.2210021
-                    </td>
-                    <td>
-                        144.801002
-                    </td>
-                    <td>
-                        Sudrajat 
-                    </td>
-                    <td>
-                        2025-08-17
-                    </td>
-                    <td>high</td>
-                    <td style={{display: 'flex'}}>
-                        <Dropdown onSelect={(_, e) => setAssignedEmployee((e.target as HTMLElement).innerText)}>
-                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                Dropdown Button
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu style={{width: '15em'}}>
-                                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        <i className="fa-solid fa-floppy-disk fa-2x" onClick={handleSave}></i>
-                    </td>
-                    </tr>
-                    {tasks.map((task : TaskDTO, idx : number) => (
-                    <tr>    
-                        <td>{idx}</td>
-                        <td>{task.description}</td>
-                        <td>{task.client_name}</td>
-                        <td>{task.client_address}</td>
-                        <td>{task.latitude}</td>
-                        <td>{task.longitude}</td>
-                        <td>{task.due_date}</td>
-                        <td>{task.priority}</td>
-                        <td style={{display: 'flex'}}>
-                            <Dropdown onSelect={(_, e) => setAssignedEmployee((e.target as HTMLElement).innerText)}>
-                                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                    Dropdown Button
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu style={{width: '15em'}}>
-                                    <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                    <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                                    <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            <i className="fa-solid fa-floppy-disk fa-2x" onClick={handleSave}></i>
-                        </td>
-                    </tr>
-                    ))}
-                </tbody>
-            </Table>
+          <span style={{ 
+            fontSize: '24px', 
+            fontWeight: 'bold',
+            color: '#2c3e50'
+          }}>Latest News</span>
         </div>
-    </div>    
-    </>
+        
+        <div className="carousel-news-contents">
+          <Carousel 
+            style={{ 
+              borderRadius: '10px', 
+              overflow: 'hidden',
+              boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+            }}
+          >
+            {/* Image Slide 1 with Caption */}
+            <Carousel.Item style={{ height: '400px' }}>
+              <div style={{ 
+                position: 'relative', 
+                height: '100%',
+                width: '100%'
+              }}>
+                <img 
+                  src={tanks} 
+                  alt="Military tanks"
+                  style={{ 
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block'
+                  }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  color: 'white',
+                  padding: '15px',
+                  textAlign: 'left'
+                }}>
+                  <h3>Military Parade</h3>
+                  <p>Annual military parade showcases latest defense technology</p>
+                </div>
+              </div>
+            </Carousel.Item>
+            
+            {/* Image Slide 2 with Caption */}
+            <Carousel.Item style={{ height: '400px' }}>
+              <div style={{ 
+                position: 'relative', 
+                height: '100%',
+                width: '100%'
+              }}>
+                <img 
+                  src={tanks} 
+                  alt="Mountain landscape"
+                  style={{ 
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block'
+                  }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  color: 'white',
+                  padding: '15px',
+                  textAlign: 'left'
+                }}>
+                  <h3>Mountain Expedition</h3>
+                  <p>Adventure team completes record-breaking mountain climb</p>
+                </div>
+              </div>
+            </Carousel.Item>
+            
+            {/* Image Slide 3 with Caption */}
+            <Carousel.Item style={{ height: '400px' }}>
+              <div style={{ 
+                position: 'relative', 
+                height: '100%',
+                width: '100%'
+              }}>
+                <img 
+                  src={tanks} 
+                  alt="Ocean view"
+                  style={{ 
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: 'block'
+                  }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  color: 'white',
+                  padding: '15px',
+                  textAlign: 'left'
+                }}>
+                  <h3>Ocean Conservation</h3>
+                  <p>New initiative to protect marine ecosystems launched</p>
+                </div>
+              </div>
+            </Carousel.Item>
+          </Carousel>
+        </div>
+      </div>
+      
+      <div style={{ marginTop: '40px', textAlign: 'center', color: '#7f8c8d' }}>
+        <p>Scroll down for more news and updates</p>
+        <div style={{ fontSize: '24px' }}>↓</div>
+      </div>
+    </div>
+  );
 }

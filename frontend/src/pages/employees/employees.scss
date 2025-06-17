@@ -1,0 +1,18 @@
+/* Make a perfectly round teal button with a white filter icon */
+.btn-circle-teal {
+  background-color: teal;
+  border: none;
+  color: white;
+  width: 36px;    /* adjust size as you like */
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* give it exactly 15px gap to the right */
+.btn-circle-teal + .dataTables_filter {
+  margin-left: 15px;
+}

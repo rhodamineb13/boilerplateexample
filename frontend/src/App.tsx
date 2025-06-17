@@ -1,74 +1,62 @@
-import { Container, Nav } from 'react-bootstrap'
-import { Location, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import './App.css'
+import { Container } from 'react-bootstrap';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import './App.css';
 import MainPage from './pages/main/main-page';
 import NotFound from './pages/not-found/not-found';
 import NavbarComponent from './components/navbar/navbar';
-import Login from './pages/login/login';
-import TaskPage from './pages/task-page/task-page';
-import logo from "./assets/baf.png"
 import LoginPage from './pages/login/login';
+import { useState, useEffect } from 'react';
+import Sidebar from './components/sidebar/sidebar';
+import TaskPage from './pages/task-page/task-page';
+import { ProtectedRoute } from './routes/protected_route';
+import EmployeesPage from './pages/employees/employees';
 
 function App() {
-  const location : Location = useLocation();
-  const hideSidebar : boolean = location.pathname === "/login";
+  const location = useLocation();
+  const hideSidebar = location.pathname === "/login";
 
-  if (hideSidebar) {
-    return (
-      <div>
-        <NavbarComponent />
-        <Container fluid className="p-4">
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-          </Routes>
-        </Container>
-      </div>
-    );
-  }
+  const [toggleCollapseSidebar, setToggleCollapseSidebar] = useState<boolean>(false);
+  const [windowCollapseSidebar, setWindowCollapseSidebar] = useState<boolean>(false);
+
+  const handleToggleCollapseSidebar = () => {
+    setToggleCollapseSidebar(prev => !prev);
+  };
+
+  useEffect(() => {
+      const handleResize = () => {
+        setWindowCollapseSidebar(window.innerWidth < 700);
+      };
+      
+      window.addEventListener('resize', handleResize);
+
+      return () => window.removeEventListener('resize', handleResize)
+  })
+
+  const combinedLogicCollapseSidebar : boolean = toggleCollapseSidebar || windowCollapseSidebar
 
   return (
-    <div className="d-flex">
-      {/* Fixed Sidebar */}
-      <div className="sidebar bg-light border-end" style={{
-        width: '250px', 
-        minHeight: '100vh',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        zIndex: 1000,
-      }}>
-        <div className="p-3">
-          {/* Logo section */}
-          <div className="mb-4">
-            <img src={logo} width="120px" alt="Logo" className="mb-2" />
-          </div>
-          
-          {/* Navigation Links */}
-          <Nav className="flex-column gap-2">
-            <Nav.Link href="/home" className="sidebar-link">
-              Home
-            </Nav.Link>
-            <Nav.Link href="/surveyor" className="sidebar-link">
-              Surveyor
-            </Nav.Link>
-          </Nav>
-        </div>
-      </div>
+    <div className="app-container">
+      <NavbarComponent onToggleSidebar={handleToggleCollapseSidebar} />
 
-      {/* Main Content Area */}
-      <div className="main-content flex-grow-1" style={{marginLeft: '250px'}}>
-        {/* Your existing navbar - but simplified since sidebar handles main navigation */}
-        <NavbarComponent />
-        
-        {/* Page Content */}
+      {!hideSidebar && <Sidebar collapsed={combinedLogicCollapseSidebar} />}
+
+      <div
+        className="main-content flex-grow-1"
+        style={{
+          marginLeft: hideSidebar ? '0' : (combinedLogicCollapseSidebar ? '60px' : '250px'),
+          transition: 'margin-left 0.3s ease'
+        }}
+      >
         <Container fluid className="p-4">
-          {/* Your router content goes here */}
           <Routes>
-            <Route path="/home" element={<MainPage />} />
-            <Route path="/tasks/:id" element={<TaskPage />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="" element={<Navigate replace to="/login" />}/> 
+            <Route element={<ProtectedRoute />}>
+              <Route path='/home' element={<MainPage />} />
+              <Route path='/' element={<Navigate to={'/home'} />} />
+              <Route path='*' element={<NotFound />} />
+              <Route path='/tasks/dashboard' element={<TaskPage />} />
+              <Route path='/employees' element={<EmployeesPage />} />
+            </Route>
+            <Route path='/login' element={<LoginPage />} />
           </Routes>
         </Container>
       </div>
@@ -76,4 +64,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

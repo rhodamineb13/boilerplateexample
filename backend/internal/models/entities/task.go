@@ -10,7 +10,7 @@ type Task struct {
 	EmployeeId      string             `gorm:"type:varchar(255);not null"`
 	ClientName      string             `gorm:"type:varchar(255);not null"`
 	ClientAddress   string             `gorm:"type:varchar(255);not null"`
-	ClientLatitutde float32            `gorm:"type:float;not null"`
+	ClientLatitude  float32            `gorm:"type:float;not null"`
 	ClientLongitude float32            `gorm:"type:float;not null"`
 	Description     string             `gorm:"type:varchar(255);not null"`
 	IsDone          bool               `gorm:"type:boolean;not null;default:false"`

@@ -1,34 +1,56 @@
 package main
 
 import (
+	"godocker/internal/config"
 	sqlDatabase "godocker/internal/database/sql_database"
 	"godocker/internal/handler"
+	"godocker/internal/middleware"
 	"godocker/internal/repository"
 	"godocker/internal/service"
+	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	r := gin.Default()
+	config.LoadEnv()
+	sqlDatabase.Connect(sqlDatabase.Postgres)
 	handler := handler.NewAdminHandler(service.NewAdminService(repository.NewAdminRepository(sqlDatabase.DB)))
 
+	r := gin.Default()
+
+	// Apply CORS middleware first, before any route definitions
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
-		AllowMethods:     []string{"POST", "PUT", "DELETE", "GET", "PATCH"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "Cookie", "X-Forwarded-For"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowOrigins: []string{
+			"http://localhost:5173",
+		},
+		AllowMethods: []string{
+			"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS",
+		},
+		AllowHeaders: []string{
+			"Origin", "Content-Length", "Content-Type", "Authorization",
+			"Accept", "X-Requested-With", "Cache-Control", "Cookie",
+		},
+		ExposeHeaders: []string{
+			"Content-Length", "Content-Type", "Cookie",
+		},
+		MaxAge:           12 * time.Hour,
 		AllowCredentials: true,
 	}))
 
 	r.POST("/login", handler.Login)
 
-	a := r.Group("/api")
-	a.POST("/tasks/assign-task", handler.AssignTask)
-	a.GET("/employees", handler.GetEmployees)
-	a.GET("/me", handler.Me)
-	a.GET("/tasks/", handler.ListAllTasks)
+	// Define the API group after CORS middleware
+	a := r.Group("/api").Use(middleware.Auth())
+	{
+		a.POST("/tasks/assign-task", handler.AssignTask)
+		a.GET("/employees", handler.GetEmployees)
+		a.GET("/me", handler.Me)
+		a.GET("/tasks", handler.ListAllTasks)
+		a.POST("/logout", handler.Logout)
+		a.POST("/ws")
+	}
 
 	r.Run()
 }

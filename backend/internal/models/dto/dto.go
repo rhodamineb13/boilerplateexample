@@ -1,7 +1,12 @@
 package dto
 
+import (
+	"godocker/internal/models/enums"
+	"time"
+)
+
 type AssignTaskDTO struct {
-	TaskId     string `json:"task_id" binding:"required"`
+	TaskId     string
 	EmployeeId string `json:"employee_id" binding:"required"`
 }
 
@@ -32,11 +37,13 @@ type TaskDTO struct {
 }
 
 type Task struct {
-	Id              string  `json:"id"`
-	ClientId        string  `json:"client_id"`
-	ClientAddress   string  `json:"client_address"`
-	ClientLatitutde float32 `json:"client_latitude"`
-	ClientLongitude float32 `json:"client_longitude"`
-	Description     string  `json:"description"`
-	IsDone          bool    `json:"is_done"`
+	Id            string             `json:"id"`
+	EmployeeId    string             `json:"employee_id"`
+	ClientName    string             `json:"client_name"`
+	ClientAddress string             `json:"client_address"`
+	Latitude      float32            `json:"latitude"`
+	Longitude     float32            `json:"longitude"`
+	DueDate       time.Time          `json:"due_date"`
+	Priority      enums.TaskPriority `json:"priority"`
+	Description   string             `json:"description"`
 }

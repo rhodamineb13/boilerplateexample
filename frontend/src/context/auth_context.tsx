@@ -1,38 +1,51 @@
-// context/AuthContext.tsx
+// context/auth_context.tsx
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { client } from '../api/api_client';
 
 interface AuthContextType {
-  isAuthenticated: boolean;
-  checkAuth: () => Promise<void>;
+  isLoggedIn?: boolean;
+  login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoggedIn, setisLoggedIn] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true); // <-- Add this
 
-  const checkAuth = async () => {
-    try {
-      const response = await client.get('/api/me', { withCredentials: true });
-      setIsAuthenticated(response.data.authenticated);
-    } catch (error) {
-      setIsAuthenticated(false);
-    }
+  useEffect(() => {
+    client.get('/api/me', { withCredentials: true })
+      .then(res => {
+        setisLoggedIn(res.data.authenticated);
+      })
+      .catch(() => setisLoggedIn(false))
+      .finally(() => setLoading(false)); // <-- Indicate that check is done
+  }, []);
+
+  const login = async (username: string, password: string) => {
+    const res = await client.post('/login', {
+      username: username,
+      password: password
+    });
+    if (res.status < 200 || res.status >= 400) throw new Error('Login failed');
+    setisLoggedIn(true);
   };
 
   const logout = async () => {
-    await client.post('/api/logout', {}, { withCredentials: true });
-    setIsAuthenticated(false);
+    // Set to false immediately to prevent race conditions
+    setisLoggedIn(false);
+    try {
+      await client.post('/api/logout', {}, { withCredentials: true });
+    } catch (error) {
+      console.error('Logout API call failed:', error);
+    }
   };
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, checkAuth, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

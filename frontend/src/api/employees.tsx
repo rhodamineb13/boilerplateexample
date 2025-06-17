@@ -68,6 +68,10 @@ export function GetSurveyor() : Promise<Employees[]> {
     })
 }
 
-export function GetSurveyor2() : Employees[] {
-    return EmployeesExample;
+export function GetAllEmployees() : Promise<Employees[]> {
+    return client.get("/api/employees")
+    .then((res : AxiosResponse) => res.data.data as Employees[])
+    .catch((err : AxiosError) => {
+        throw err;
+    })
 }
