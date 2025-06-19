@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"godocker/internal/models/enums"
+	"backend/internal/models/enums"
 	"time"
 )
 

@@ -1,6 +1,6 @@
 package dto
 
-import "godocker/internal/models/enums"
+import "backend/internal/models/enums"
 
 type EmployeeDTO struct {
 	Id       string             `json:"id"`

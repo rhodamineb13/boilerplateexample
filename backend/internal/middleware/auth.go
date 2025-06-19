@@ -1,7 +1,8 @@
 package middleware
 
 import (
-	"godocker/internal/utils/token"
+	"backend/internal/utils/token"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,8 @@ func Auth() gin.HandlerFunc {
 		}
 
 		uname := claims.Username
+
+		fmt.Println("username: ", uname)
 
 		c.Set("username", uname)
 		c.Next()

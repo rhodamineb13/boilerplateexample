@@ -1,13 +1,13 @@
 package service
 
 import (
+	"backend/internal/config"
+	"backend/internal/models/dto"
+	"backend/internal/models/enums"
+	"backend/internal/repository"
+	"backend/internal/utils/token"
 	"context"
 	"fmt"
-	"godocker/internal/config"
-	"godocker/internal/models/dto"
-	"godocker/internal/models/enums"
-	"godocker/internal/repository"
-	"godocker/internal/utils/token"
 
 	"github.com/go-ldap/ldap/v3"
 )
@@ -56,6 +56,7 @@ func (s *adminService) ListAllTasks(ctx context.Context, pagination dto.Paginati
 	} else {
 		search = pagination.Search
 	}
+
 
 	total, tasksEntity, err := s.repository.ListTask(ctx, limit, page, search)
 	if err != nil {
@@ -129,7 +130,7 @@ func (s *adminService) Login(ctx context.Context, req dto.LoginDTO) (string, err
 
 	filter := fmt.Sprintf("(&(objectClass=posixAccount)(uid=%s))", req.Username)
 
-	reqLDAP := ldap.NewSearchRequest(config.LDAP_SEARCH_DN, ldap.ScopeWholeSubtree, 0, 0, 0, false, filter, []string{"cn", "dn", "uid", "givenName"}, nil)
+	reqLDAP := ldap.NewSearchRequest(config.LDAP_SEARCH_DN, ldap.ScopeWholeSubtree, 0, 0, 0, false, filter, []string{"cn", "dn", "uid", "givenName", "sn"}, nil)
 	res, err := l.Search(reqLDAP)
 	if err != nil {
 		return "", err

@@ -13,9 +13,10 @@ type MenuItem = {
 
 type SidebarProps = {
   collapsed: boolean;
+  onHover?: () => void;
 };
 
-const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
+const Sidebar: React.FC<SidebarProps> = ({ collapsed, onHover }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
@@ -24,14 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
   // Menu configuration
   const menuItems: MenuItem[] = [
     { path: '/home', title: 'Home', icon: 'fa-house' },
-    { 
-      title: 'Tasks', 
-      icon: 'fa-clipboard-list',
-      subItems: [
-        { path: '/tasks/dashboard', title: 'Dashboard', icon: "fa-gauge" },
-        { path: '/tasks/assign', title: 'Assign', icon: "fa-thumbtack" },
-      ]
-    },
+    { path: '/tasks', title: 'Tasks', icon: 'fa-clipboard-list' },
     { path: '/profile', title: 'Profile', icon: 'fa-user'},
     { path: '/employees', title: 'Employees', icon: 'fa-users'},
     { path: '/surveyors', title: 'Surveyor', icon: 'fa-magnifying-glass'}
@@ -79,6 +73,9 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed }) => {
     <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-content">
         <Nav className="flex-column gap-2">
+          <div className="main-nav" style={{textAlign: 'center', backgroundColor: '#002f5f', display: 'flex', alignItems: 'center', justifyContent: 'center',}}>
+            {!collapsed && (<h5 style={{color: 'white', margin: 0}}>MAIN NAVIGATION</h5>)}            
+          </div>
           {menuItems.map((item) => {
             if (item.subItems) {
               const isExpanded = expandedItems[item.title];

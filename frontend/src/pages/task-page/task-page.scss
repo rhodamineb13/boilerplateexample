@@ -2,3 +2,19 @@ th {
     background-color: #002f5f !important;
     color: #ffffff !important;
 }
+
+.task-number {
+    display: flex;
+    font-size: 60px !important;
+    justify-content: center;
+}
+
+.task-table {
+    margin: 60px auto;
+    width: 100%;
+    overflow-x: auto;
+    table {
+        width: 100%; 
+        table-layout: fixed;
+    }
+}

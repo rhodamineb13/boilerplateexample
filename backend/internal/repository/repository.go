@@ -1,9 +1,9 @@
 package repository
 
 import (
+	"backend/internal/models/entities"
+	"backend/internal/models/enums"
 	"context"
-	"godocker/internal/models/entities"
-	"godocker/internal/models/enums"
 
 	"gorm.io/gorm"
 )
@@ -48,15 +48,15 @@ func (r *adminRepository) ListTask(ctx context.Context, limit int, page int, sea
 
 	r.db.WithContext(ctx).Model(&entities.Task{}).Count(&total)
 
-
 	db := r.db.WithContext(ctx)
 	if search != "" {
 		pattern := "%" + search + "%"
-		db.Where("client_name ILIKE ? OR client_address ILIKE ? OR description ILIKE ?", pattern)
+		err := db.Where("client_name ILIKE ? OR client_address ILIKE ? OR description ILIKE ?", pattern, pattern, pattern).Find(&tasks).Error
+
+		return int(total), tasks, err
 	}
 
-	err := db.Limit(limit).Offset((page-1)*limit).Find(&tasks).Error
-
+	err := db.Limit(limit).Offset((page - 1) * limit).Find(&tasks).Error
 
 	// err := r.db.WithContext(ctx).Where("created_at > ?", created_at).Or("created_at = ? AND id > ?", created_at, id).Find(&tasks).Error
 

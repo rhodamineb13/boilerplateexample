@@ -6,7 +6,7 @@
   }
 
   .burger-btn {
-    color: rgb(0, 47, 95);
+    color: #002f5f;
     background: none;
     border: none;
   }
@@ -23,7 +23,7 @@
 
   .navbar-nav a {
     font-size: 18px !important;
-    color: rgb(0, 47, 95) !important;
+    color: #002f5f !important;
     font-weight: 900 !important;
   }
 }
@@ -50,5 +50,19 @@
 }
 
 svg {
-  fill: rgb(0, 47, 95) !important;
+  fill: #002f5f !important;
+}
+
+.dropdown-menu {
+  .dropdown-item {
+    transition: background-color 0.2s;
+    
+    &:hover {
+      background-color: #f8f9fa;
+    }
+    
+    &:active {
+      background-color: #e9ecef;
+    }
+  }
 }

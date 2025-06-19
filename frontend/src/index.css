@@ -10,7 +10,7 @@ body {
   flex-direction: column;
   width: 100%; /* Added */
   overflow-y: auto; /* Allow body scrolling */
-  color: rgb(0, 47, 95) !important;
+  color: #002f5f !important;
 }
 
 .navbar {

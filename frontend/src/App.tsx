@@ -10,6 +10,9 @@ import Sidebar from './components/sidebar/sidebar';
 import TaskPage from './pages/task-page/task-page';
 import { ProtectedRoute } from './routes/protected_route';
 import EmployeesPage from './pages/employees/employees';
+import { APIProvider } from '@vis.gl/react-google-maps';
+import { ProfilePage } from './pages/profile/profile';
+
 
 function App() {
   const location = useLocation();
@@ -21,6 +24,7 @@ function App() {
   const handleToggleCollapseSidebar = () => {
     setToggleCollapseSidebar(prev => !prev);
   };
+
 
   useEffect(() => {
       const handleResize = () => {
@@ -35,32 +39,33 @@ function App() {
   const combinedLogicCollapseSidebar : boolean = toggleCollapseSidebar || windowCollapseSidebar
 
   return (
-    <div className="app-container">
-      <NavbarComponent onToggleSidebar={handleToggleCollapseSidebar} />
+      <div className="app-container">
+        <NavbarComponent onToggleSidebar={handleToggleCollapseSidebar} />
 
-      {!hideSidebar && <Sidebar collapsed={combinedLogicCollapseSidebar} />}
+        {!hideSidebar && <Sidebar collapsed={combinedLogicCollapseSidebar} />}
 
-      <div
-        className="main-content flex-grow-1"
-        style={{
-          marginLeft: hideSidebar ? '0' : (combinedLogicCollapseSidebar ? '60px' : '250px'),
-          transition: 'margin-left 0.3s ease'
-        }}
-      >
-        <Container fluid className="p-4">
-          <Routes>
-            <Route element={<ProtectedRoute />}>
-              <Route path='/home' element={<MainPage />} />
-              <Route path='/' element={<Navigate to={'/home'} />} />
-              <Route path='*' element={<NotFound />} />
-              <Route path='/tasks/dashboard' element={<TaskPage />} />
-              <Route path='/employees' element={<EmployeesPage />} />
-            </Route>
-            <Route path='/login' element={<LoginPage />} />
-          </Routes>
-        </Container>
+        <div
+          className="main-content flex-grow-1"
+          style={{
+            marginLeft: hideSidebar ? '0' : (combinedLogicCollapseSidebar ? '60px' : '250px'),
+            transition: 'margin-left 0.3s ease'
+          }}
+        >
+          <Container fluid className="p-4">
+            <Routes>
+              <Route element={<ProtectedRoute />}>
+                <Route path='/home' element={<MainPage />} />
+                <Route path='/' element={<Navigate to={'/home'} />} />
+                <Route path='*' element={<NotFound />} />
+                <Route path='/tasks' element={<TaskPage />} />
+                <Route path='/employees' element={<EmployeesPage />} />
+                <Route path='/profile' element={<ProfilePage />} />
+              </Route>
+              <Route path='/login' element={<LoginPage />} />
+            </Routes>
+          </Container>
+        </div>
       </div>
-    </div>
   );
 }
 

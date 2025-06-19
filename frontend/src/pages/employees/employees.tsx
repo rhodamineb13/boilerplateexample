@@ -85,11 +85,11 @@ export default function EmployeesPage(): JSX.Element {
                             </colgroup>
                             <thead>
                                 <tr>
-                                    <th><div className='d-flex justify-content-between'>No. <i className="fa-solid fa-sort"></i></div></th>
-                                    <th><div className='d-flex justify-content-between'>Name. <i className="fa-solid fa-sort"></i></div></th>
-                                    <th><div className='d-flex justify-content-between'>Username. <i className="fa-solid fa-sort"></i></div></th>
-                                    <th><div className='d-flex justify-content-between'>Email. <i className="fa-solid fa-sort"></i></div></th>
-                                    <th><div className='d-flex justify-content-between'>Role. <i className="fa-solid fa-sort"></i></div></th>
+                                    <th><div className='d-flex justify-content-between align-items-center'>No. <i className="fa-solid fa-sort"></i></div></th>
+                                    <th><div className='d-flex justify-content-between align-items-center'>Name. <i className="fa-solid fa-sort"></i></div></th>
+                                    <th><div className='d-flex justify-content-between align-items-center'>Username. <i className="fa-solid fa-sort"></i></div></th>
+                                    <th><div className='d-flex justify-content-between align-items-center'>Email. <i className="fa-solid fa-sort"></i></div></th>
+                                    <th><div className='d-flex justify-content-between align-items-center'>Role. <i className="fa-solid fa-sort"></i></div></th>
                                 </tr>
                             </thead>
                             <tbody>

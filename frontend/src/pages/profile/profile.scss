@@ -1,0 +1,22 @@
+.employee-profile {
+    // background: linear-gradient(135deg, #002f5f 30%, #eeaf30 90%);
+    background-color: #002f5f;
+    width: 350px;
+    color: white;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.employee-profile .employee-profile-description {
+    text-align: center;
+    padding-top: 15px;
+}
+
+.employee-profile .employee-personal-info {
+    background-color: #ffffff;
+    color: #002f5f;
+    border: 2px solid #002f5f;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    justify-content: space-between;
+}

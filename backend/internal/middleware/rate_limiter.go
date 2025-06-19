@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"godocker/internal/utils/ratelimiter"
+	"backend/internal/utils/ratelimiter"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

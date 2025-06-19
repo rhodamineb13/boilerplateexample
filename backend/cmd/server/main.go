@@ -1,12 +1,12 @@
 package main
 
 import (
-	"godocker/internal/config"
-	sqlDatabase "godocker/internal/database/sql_database"
-	"godocker/internal/handler"
-	"godocker/internal/middleware"
-	"godocker/internal/repository"
-	"godocker/internal/service"
+	"backend/internal/config"
+	sqlDatabase "backend/internal/database/sql_database"
+	"backend/internal/handler"
+	"backend/internal/middleware"
+	"backend/internal/repository"
+	"backend/internal/service"
 	"time"
 
 	"github.com/gin-contrib/cors"
@@ -49,7 +49,8 @@ func main() {
 		a.GET("/me", handler.Me)
 		a.GET("/tasks", handler.ListAllTasks)
 		a.POST("/logout", handler.Logout)
-		a.POST("/ws")
+		a.POST("/ws", handler.HandleWS)
+		a.POST("/location", handler.HandleSurveyorLocation)
 	}
 
 	r.Run()

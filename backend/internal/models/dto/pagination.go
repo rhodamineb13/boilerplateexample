@@ -1,8 +1,8 @@
 package dto
 
 type Pagination struct {
-	Limit  *int    `form:"limit"`
-	Page   *int    `form:"page"`
+	Limit  *int   `form:"limit"`
+	Page   *int   `form:"page"`
 	Search string `form:"search"`
 }
 

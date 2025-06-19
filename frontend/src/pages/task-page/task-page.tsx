@@ -10,14 +10,19 @@ export default function TaskPage(): JSX.Element {
     const [totalEntries, setTotalEntries] = useState<number>(0);
     const [page, setPage] = useState<number>(1);
     const [limit, setPageLimit] = useState<number>(10);
+    const [search, setSearch] = useState<string>("");
 
     useEffect(() => {
-        GetAllTasks(limit, page).then((t : PaginatedResponse<TaskDTO>) => {
-            console.log(t);
+        setPage(1)
+    }, [limit, search])
+
+    useEffect(() => {
+        GetAllTasks(limit, page, search).then((t : PaginatedResponse<TaskDTO>) => {
             setTasks(t.data);
             setTotalEntries(t.total);
+            console.log(t)
         });
-    }, [page, limit]);
+    }, [page, limit, search]);
 
     const firstIndex = (page - 1) * limit + 1;
     const lastIndex  = Math.min(page * limit, totalEntries);
@@ -53,25 +58,33 @@ export default function TaskPage(): JSX.Element {
         <>
                 <div className="task-dashboard">
                 <h1 style={{textAlign: "center"}}>TASK DASHBOARD</h1>
-                <div className = "task-statistics" style={{display:'flex', margin: 'auto', gap: '30px'}}>
-                    <div className="task-count" style={{width: '360px', backgroundColor: 'rgba(0, 0, 0, 0.12)', height: '150px', borderRadius: '8px'}}>
-                        <h4 style={{display: 'flex', marginTop: '10px', marginLeft: '30px'}}>
+                <div className = "task-statistics" style={{display:'flex', marginTop: '40px', justifyContent: 'center', gap: '50px'}}>
+                    <div className="task-count" style={{width: '300px', height: '150px', borderRadius: '8px', boxShadow: '0px 8px 8px rgba(0, 0, 0, 0.2)'}}>
+                        <div style={{backgroundColor: '#002f5f', position: 'relative'}}>
+                            <h4 style={{display: 'flex', marginTop: '10px', justifyContent: 'center', color: 'white'}}>
                             TASKS TOTAL
-                        </h4>
+                            </h4>
+                        </div>
+                        <span className="task-number">{totalEntries}</span>
                     </div>
-                    <div className="task-count" style={{width: '360px', backgroundColor: 'rgba(0, 0, 0, 0.12)', height: '150px', borderRadius: '8px'}}>
-                        <h4 style={{display: 'flex', marginTop: '10px', marginLeft: '30px'}}>
-                            TASKS ASSIGNED
-                        </h4>
+                    <div className="task-count" style={{width: '300px', height: '150px', borderRadius: '8px', boxShadow: '0px 8px 8px rgba(0, 0, 0, 0.2)'}}>
+                        <div style={{backgroundColor: '#002f5f', position: 'relative'}}>
+                            <h4 style={{display: 'flex', marginTop: '10px', justifyContent: 'center', color: 'white'}}>
+                            TASKS TOTAL
+                            </h4>
+                        </div>
+                        <span className="task-number">{totalEntries}</span>
                     </div>
-                    <div className="task-count" style={{width: '360px', backgroundColor: 'rgba(0, 0, 0, 0.12)', height: '150px', borderRadius: '8px'}}>
-                        <h4 style={{display: 'flex', marginTop: '10px', marginLeft: '30px'}}>
-                            TASKS DONE
-                        </h4>
+                    <div className="task-count" style={{width: '300px', height: '150px', borderRadius: '8px', boxShadow: '0px 8px 8px rgba(0, 0, 0, 0.2)'}}>
+                        <div style={{backgroundColor: '#002f5f', position: 'relative'}}>
+                            <h4 style={{display: 'flex', marginTop: '10px', justifyContent: 'center', color: 'white'}}>
+                            TASKS TOTAL
+                            </h4>
+                        </div>
+                        <span className="task-number">{totalEntries}</span>
                     </div>
                 </div>
                 <div className="tasks-table" style={{
-                    display: 'table',
                     margin: '60px auto',
                     width: '100%'
                 }}>
@@ -109,32 +122,35 @@ export default function TaskPage(): JSX.Element {
                             id='search' 
                             className="form-control"
                             style={{width: '250px'}}
+                            onChange={(e : React.ChangeEvent<HTMLInputElement>) => {
+                            setSearch(e.target.value)
+                            }}
                         />
                         </form>
                     </div>
-                    <Table>
+                    <Table striped>
                         <colgroup>
-                        <col style={{width: '10em'}}  />
-                        <col style={{width: '20em'}} />
-                        <col style={{width: '20em'}} />
-                        <col style={{width: '20em'}} />
-                        <col style={{width: '15em'}} />
-                        <col style={{width: '15em'}} />
-                        <col style={{width: '30em'}} />
-                        <col style={{width: '30em'}} />
-                        <col style={{width: '30em'}} />
+                        <col style={{width: '5%'}}  />
+                        <col style={{width: '10%'}} />
+                        <col style={{width: '15%'}} />
+                        <col style={{width: '15%'}} />
+                        <col style={{width: '10%'}} />
+                        <col style={{width: '10%'}} />
+                        <col style={{width: '12%'}} />
+                        <col style={{width: '13%'}} />
+                        <col style={{width: '5%'}} />
                         </colgroup>
                         <thead>
                             <tr>
-                                <th><div className='d-flex justify-content-between'>No. <i className="fa-solid fa-sort"></i></div></th>
-                                <th><div className='d-flex justify-content-between'>Description. <i className="fa-solid fa-sort"></i></div></th>
-                                <th><div className='d-flex justify-content-between'>Client Name. <i className="fa-solid fa-sort"></i></div></th>
-                                <th><div className='d-flex justify-content-between'>Client Address. <i className="fa-solid fa-sort"></i></div></th>
-                                <th><div className='d-flex justify-content-between'>Latitude. <i className="fa-solid fa-sort"></i></div></th>
-                                <th><div className='d-flex justify-content-between'>Longitude. <i className="fa-solid fa-sort"></i></div></th>
-                                <th><div className='d-flex justify-content-between'>Assigned To. <i className="fa-solid fa-sort"></i></div></th>
-                                <th><div className='d-flex justify-content-between'>Due Date. <i className="fa-solid fa-sort"></i></div></th>
-                                <th><div className='d-flex justify-content-between'>Priority. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>No. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>Description. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>Client Name. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>Client Address. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>Latitude. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>Longitude. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>Assigned To. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>Due Date. <i className="fa-solid fa-sort"></i></div></th>
+                                <th><div className='d-flex justify-content-between align-items-center'>Priority. <i className="fa-solid fa-sort"></i></div></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -146,8 +162,8 @@ export default function TaskPage(): JSX.Element {
                                     <td>{task.client_address}</td>
                                     <td>{task.latitude}</td>
                                     <td>{task.longitude}</td>
-                                    <td>halo brok</td>
-                                    <td>"apa kabar"</td>
+                                    <td> </td>
+                                    <td> </td>
                                     <td>{task.priority}</td>
                                 </tr>
                                 ))}

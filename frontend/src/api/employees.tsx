@@ -75,3 +75,11 @@ export function GetAllEmployees() : Promise<Employees[]> {
         throw err;
     })
 }
+
+export function GetUnassignedSurveyors() : Promise<Employees[]> {
+    return client.get("api/employees/unassigned-surveyors")
+            .then((res: AxiosResponse) => res.data as Employees[])
+            .catch((err : AxiosError) => {
+                throw err;
+            })
+}

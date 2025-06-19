@@ -1,15 +1,26 @@
 package handler
 
 import (
-	"godocker/internal/models/dto"
-	"godocker/internal/models/enums"
-	"godocker/internal/models/response"
-	"godocker/internal/service"
-	"godocker/internal/utils/validator"
+	"backend/internal/models/dto"
+	"backend/internal/models/enums"
+	"backend/internal/models/response"
+	"backend/internal/service"
+	"backend/internal/utils/validator"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
+)
+
+var (
+	upgrader = websocket.Upgrader{
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+	clients = make(map[*websocket.Conn]bool)
 )
 
 type AdminHandler struct {
@@ -51,9 +62,9 @@ func (h *AdminHandler) ListAllTasks(c *gin.Context) {
 	var pagination dto.Pagination
 
 	if err := c.ShouldBindQuery(&pagination); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pagination parameters"})
-        return
-    }
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid pagination parameters"})
+		return
+	}
 
 	res, err := h.service.ListAllTasks(c, pagination)
 	if err != nil {
@@ -150,7 +161,44 @@ func (h *AdminHandler) Me(c *gin.Context) {
 	})
 }
 
-func (h *AdminHandler) RealLiveTrack(c *gin.Context) {}
+func (h *AdminHandler) HandleSurveyorLocation(c *gin.Context) {
+	var s dto.SurveyorLocationDTO
+
+	if err := c.ShouldBindJSON(&s); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    fmt.Sprintf("bad request: %v", err),
+			Data:       nil,
+		})
+		return
+	}
+
+	for ws := range clients {
+		ws.WriteJSON(s)
+	}
+
+	c.Status(http.StatusNoContent)
+}
+
+func (h *AdminHandler) HandleWS(c *gin.Context) {
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, c.Request.Response.Header)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    fmt.Sprintf("failed in making connection to websocket: %v", err),
+			Data:       nil,
+		})
+	}
+
+	defer conn.Close()
+
+	for {
+		if _, _, err = conn.NextReader(); err != nil {
+			delete(clients, conn)
+			break
+		}
+	}
+}
 
 func (h *AdminHandler) Logout(c *gin.Context) {
 

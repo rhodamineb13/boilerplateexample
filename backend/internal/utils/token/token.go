@@ -1,7 +1,6 @@
 package token
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -15,7 +14,7 @@ type JWTClaims struct {
 
 func NewJWTToken(username string) *JWTClaims {
 	claims := &jwt.RegisteredClaims{
-		Issuer: "godocker",
+		Issuer: "backend",
 		ExpiresAt: &jwt.NumericDate{
 			Time: time.Now().Add(24 * time.Hour), // Token valid for 24 hours
 		},
@@ -35,7 +34,6 @@ func GenerateJWTToken(username string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("signedToken: ", signedToken)
 	return signedToken, nil
 }
 
