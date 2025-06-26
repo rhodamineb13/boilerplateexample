@@ -2,10 +2,8 @@ package handler
 
 import (
 	"backend/internal/models/dto"
-	"backend/internal/models/enums"
 	"backend/internal/models/response"
 	"backend/internal/service"
-	"backend/internal/utils/validator"
 	"fmt"
 	"log"
 	"net/http"
@@ -35,6 +33,9 @@ func (h *AdminHandler) AssignTask(c *gin.Context) {
 	var req dto.AssignTaskDTO
 
 	taskId := c.Param("id")
+	if taskId == "" {
+		return
+	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		return
@@ -77,44 +78,6 @@ func (h *AdminHandler) ListAllTasks(c *gin.Context) {
 		StatusCode: http.StatusOK,
 		Message:    "success",
 		Data:       res,
-	})
-
-}
-
-func (h *AdminHandler) GetEmployees(c *gin.Context) {
-	var emps []dto.EmployeeDTO
-	var err error
-
-	role := c.Query("role")
-
-	if role == "" {
-		emps, err = h.service.GetEmployees(c, nil)
-	} else {
-		if !validator.ValidateRole(role) {
-			c.JSON(http.StatusBadRequest, response.Response{
-				StatusCode: http.StatusBadRequest,
-				Message:    "invalid role",
-				Data:       nil,
-			})
-			return
-		}
-		r := enums.EmployeeRole(role)
-		emps, err = h.service.GetEmployees(c, &r)
-	}
-
-	if err != nil {
-		c.JSON(http.StatusNotFound, response.Response{
-			StatusCode: http.StatusInternalServerError,
-			Message:    "unexpected error trying to retrieve data",
-			Data:       emps,
-		})
-		return
-	}
-
-	c.JSON(http.StatusOK, response.Response{
-		StatusCode: http.StatusOK,
-		Message:    "successfully queried data",
-		Data:       emps,
 	})
 
 }
@@ -208,4 +171,90 @@ func (h *AdminHandler) Logout(c *gin.Context) {
 		Message:    "log out success",
 		Data:       nil,
 	})
+}
+
+func (h *AdminHandler) GetUnassignedSurveyors(c *gin.Context) {
+	surv, err := h.service.GetUnassignedSurveyors(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    fmt.Sprintf("unexpected error: %v", err),
+			Data:       nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "data successfully retrieved",
+		Data:       surv,
+	})
+}
+
+func (h *AdminHandler) GetAssignedSurveyors(c *gin.Context) {
+	surv, err := h.service.GetAssignedSurveyors(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    fmt.Sprintf("unexpected error: %v", err),
+			Data:       nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "data successfully retrieved",
+		Data:       surv,
+	})
+}
+
+func (h *AdminHandler) CreateNews(c *gin.Context) {
+	var req dto.NewsRequestDTO
+
+	employeeId, ok := c.Get("employee_id")
+	if !ok {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "bad")
+		return
+	}
+
+	req.EmployeeId = employeeId.(string)
+
+	if err := c.ShouldBind(&req); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "bad")
+		return
+	}
+
+	if err := h.service.CreateNews(c, req); err != nil {
+		fmt.Println(err)
+		c.AbortWithStatusJSON(http.StatusInternalServerError, "server error")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": req,
+	})
+}
+
+func (h *AdminHandler) GetNews(c *gin.Context) {
+	news, err := h.service.GetNews(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, response.Response{
+			StatusCode: http.StatusInternalServerError,
+			Message:    fmt.Sprintf("unexpected error: %v", err),
+			Data:       nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "data successfully retrieved",
+		Data:       news,
+	})
+
+}
+
+func (h *AdminHandler) GetLatestNews(c *gin.Context) {
+
 }

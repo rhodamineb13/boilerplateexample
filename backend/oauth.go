@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -45,7 +44,6 @@ func getconfigJSON() *OAuthConfig {
 
 func GetOAuth2Config() {
 	conf := getconfigJSON()
-	fmt.Println(conf)
 
 	googleOAuthConfig = &oauth2.Config{
 		RedirectURL:  "http://localhost:70/callback",

@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"backend/internal/utils/token"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -22,11 +21,9 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
-		uname := claims.Username
+		uid := claims.EmployeeId
 
-		fmt.Println("username: ", uname)
-
-		c.Set("username", uname)
+		c.Set("employee_id", uid)
 		c.Next()
 	}
 }

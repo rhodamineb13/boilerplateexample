@@ -27,7 +27,6 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, onHover }) => {
     { path: '/home', title: 'Home', icon: 'fa-house' },
     { path: '/tasks', title: 'Tasks', icon: 'fa-clipboard-list' },
     { path: '/profile', title: 'Profile', icon: 'fa-user'},
-    { path: '/employees', title: 'Employees', icon: 'fa-users'},
     { path: '/surveyors', title: 'Surveyor', icon: 'fa-magnifying-glass'}
   ];
 

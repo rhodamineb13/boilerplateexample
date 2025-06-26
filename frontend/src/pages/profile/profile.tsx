@@ -1,14 +1,28 @@
 import { JSX } from "react";
 import './profile.scss';
 import profile from '../../assets/default-profile-placeholder-mfby2k0rliz1szsn.png'
+import { Button, Form, Tab, Tabs } from "react-bootstrap";
+import OwlCarousel from 'react-owl-carousel';
+import lock from "../../assets/password.png"
 
 const size : number = 150
 
+const options = {
+  items: 3,
+  loop: true,
+  autoplay: true,           // 🔥 required to enable auto play
+  autoplayTimeout: 3000,    // 🔥 5 seconds between slides
+  autoplaySpeed: 500,       // slide transition animation speed
+  margin: 15,
+  nav: false,
+  dots: false,
+};
+
 export function ProfilePage() : JSX.Element {
     return (
-        <>
-            <div className="employee-profile">
-                <div className="employee-profile-description" style={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
+        <div className="employee-profile-page" style={{width: '100%', display: 'flex', flexDirection: 'row', gap: '3%', justifyContent: 'space-between'}}>
+            <div className="employee-profile" style={{width: '25%'}}>
+                <div className="employee-profile-description" style={{width: '100%', display: 'flex', flexDirection: 'column', gap: '10px'}}>
                     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
                         <svg
                             width={size}
@@ -30,7 +44,7 @@ export function ProfilePage() : JSX.Element {
                             />
                         </svg>
                     </div>
-                    <h2>A VERY LONG NAME</h2>
+                    <h3>A VERY LONG NAME</h3>
                     <p>verylongusername</p>
                     <h4>Role</h4>
                     
@@ -55,7 +69,75 @@ export function ProfilePage() : JSX.Element {
                         </div>
                     </div>
                 </div>
+                {/* <div className="profile-shortcut" style={{marginTop: '60px', border: '2px solid #002f5f'}}>
+                    <div className="profile-shortcut-header" style={{textAlign: 'left', backgroundColor: '#002f5f'}}>
+                        <h4><i className="fa-solid fa-link" style={{marginRight: '5px'}}></i>SHORTCUT</h4>
+                    </div>
+                    <Container
+                    fluid
+                    style={{
+                        padding: "10px",
+                        width: "60%",
+                        display: "flex",
+                        justifyContent: "center", // horizontal center
+                        alignItems: "center",     // vertical center
+                    }}
+                    >
+                    <div style={{ width: "100%" }}>
+                        <Row style={{ color: "black", marginBottom: "10px" }}>
+                            <Col style={{ marginRight: "10px", backgroundColor: "#f0f0f0" }}><i className="fa-solid fa-clipboard-list"></i><p>Halo</p></Col>
+                            <Col style={{ backgroundColor: "#f0f0f0" }}>Apa kabar</Col>
+                        </Row>
+                        <Row style={{ color: "black", marginBottom: "10px" }}>
+                            <Col style={{ marginRight: "10px", backgroundColor: "#f0f0f0" }}>Halo</Col>
+                            <Col style={{ backgroundColor: "#f0f0f0" }}>Apa kabar</Col>
+                        </Row>
+                    </div>
+                    </Container>
+                </div> */}
             </div>
-        </>
+            <div className="employee-statistics-and-menus" style={{width: '72%'}}>
+                <div className="employee-statistics-carousel" style={{display: 'flex', justifyContent: 'center'}}>
+                    <OwlCarousel className="owl-theme" {...options}>
+                        <div className="item"><h5 className="description">Total sick</h5><span className="number">1</span></div>
+                        <div className="item"><h5 className="description">Total leave</h5><span className="number">2</span></div>
+                        <div className="item"><h5 className="description">Total AWOL</h5><span className="number">0</span></div>
+                        <div className="item"><h5 className="description">Remaining Quota</h5><span className="number">9</span></div>
+                    </OwlCarousel>
+                </div>
+                <div className="employee-notifications-settings">
+                    <Tabs>
+                        <Tab eventKey="notifications" title={<span>Notifications</span>}> <span> Notifications </span> </Tab>
+                        <Tab eventKey="settings" title={<span>Settings</span>}>
+                            <div className="settings-menu">
+                                <div className="settings-menu-change-password" style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', gap: '50px'}}>
+                                    <div className="settings-menu-change-password-form" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+                                        <Form>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label> Current Password </Form.Label>
+                                                <Form.Control type="password"/>
+                                            </Form.Group>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label> New Password </Form.Label>
+                                                <Form.Control type="password"/>
+                                            </Form.Group>
+                                            <Form.Group className="mb-3">
+                                                <Form.Label> Confirm Password </Form.Label>
+                                                <Form.Control type="password"/>
+                                            </Form.Group>
+                                            <Button type="submit"><span>Submit</span></Button>
+                                        </Form>
+                                    </div>  
+                                    <div className="settings-menu-change-password-icon">
+                                        <img src={lock} width={300}/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </Tab>
+                    </Tabs>
+                </div>
+            </div>
+        </div>
     )
-}
+}                    

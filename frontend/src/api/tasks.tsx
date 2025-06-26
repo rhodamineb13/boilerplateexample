@@ -13,7 +13,7 @@ export function GetAllTasks(limit? : number, page? : number, search? : string) :
         }
     })
     .then((res : AxiosResponse) => {
-        console.log(res.config.params)
+        console.log(res.data.data)
         return res.data.data as PaginatedResponse<TaskDTO>
     })
     .catch((err : AxiosError) => {
@@ -22,9 +22,13 @@ export function GetAllTasks(limit? : number, page? : number, search? : string) :
 }
 
 export function AssignTask(id : string, employee_id : string) : Promise<void> {
-    return client.post(`/tasks/${id}`, {
+    return client.post(`/api/tasks/${id}/assign-task`, {
         employee_id: employee_id,
     })
-    .then((res : AxiosResponse) => alert(`${res.data}`))
-    .catch((err) => alert(err))
+    .then((res : AxiosResponse) => {
+        console.log(res);
+    })
+    .catch((err) => {
+        alert(err)
+    })
 }

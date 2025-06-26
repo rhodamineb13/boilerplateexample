@@ -1,75 +1,31 @@
-import React, { JSX, useState, useRef, useEffect } from 'react';
+import { JSX, useState, useRef, useEffect } from 'react';
 import './main-page.scss'; // Assuming you have a CSS file for styling
 import { Carousel, Tab, Tabs} from 'react-bootstrap';
 import tanks from '../../assets/tanks.png'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import { MapComponent } from '../../components/map/map';
+import { NewsDTO } from '../../models/dto/news_dto';
+import { GetNews } from '../../api/news';
+import { ConvertCurrentDateTime, ConvertToReadableFormat, DateTime } from '../../utils/date_conversion';
+import NewsComponent from '../../components/news/news';
+
 
 type EventKey = string | number;
 
-interface DateTime {
-  day : string;
-  date : number;
-  month : string;
-  year : number
-  time : string;
-  tz : string;
-}
-
-const dayMap : Map<number, string> = new Map<number, string>([
-  [0, "Sunday"],
-  [1, "Monday"],
-  [2, "Tuesday"],
-  [3, "Wednesday"],
-  [4, "Thursday"],
-  [5, "Friday"],
-  [6, "Saturday"],
-]);
-
-const monthMap : Map<number, string> = new Map<number, string>([
-  [0, "January"],
-  [1, "February"],
-  [2, "March"],
-  [3, "April"],
-  [4, "May"],
-  [5, "June"],
-  [6, "July"],
-  [7, "August"],
-  [8, "September"],
-  [9, "October"],
-  [10, "November"],
-  [11, "December"]
-]);
 
 export default function MainPage(): JSX.Element {
   const [activeTab, setActiveTab] = useState<EventKey | undefined>('news');
   const [dateTime, setDateTime] = useState<DateTime>();
+  const [allNews, setAllNews] = useState<NewsDTO[]>([]);
   const calendarRef = useRef<any>(null);
 
   useEffect(() => {
+    GetNews().then((news : NewsDTO[]) => setAllNews(news))
+  }, [])
+
+  useEffect(() => {
     const tick = () => {
-      const now : Date = new Date();
-
-      const totalMin = -now.getTimezoneOffset();
-      const sign = totalMin >= 0 ? "+" : "-";
-      const pad = (n: number) => String(n).padStart(2, "0");
-      const hours = pad(Math.floor(Math.abs(totalMin) / 60));
-      const minutes = pad(Math.abs(totalMin) % 60);
-      const offset = `${sign}${hours}:${minutes}`;
-
-      const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
-
-      const tz : string = `(GMT${offset} ${timeZone})`;
-
-      const currentDateTime : DateTime = {
-        day: dayMap.get(now.getDay())!,
-        date: now.getDate(),
-        month: monthMap.get(now.getMonth())!,
-        year: now.getFullYear(),
-        time: `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}`,
-        tz: tz
-      }
+      const currentDateTime : DateTime = ConvertCurrentDateTime();
 
       setDateTime(currentDateTime)
     }
@@ -253,14 +209,11 @@ export default function MainPage(): JSX.Element {
           </Carousel>
         </div>
       </div>
-      <div>
-        <MapComponent />
-      </div>
 
       <div className="news-and-events" style={{marginTop: '60px'}}>
         <Tabs activeKey={activeTab} onSelect={(key : string | null) => setActiveTab(key as EventKey)}>
           <Tab eventKey="news" title="News">
-            News
+              <NewsComponent data={allNews} />
           </Tab>
           <Tab eventKey="events" title="Events">
             <div id="calendar" style={{ marginTop: '30px' }}>

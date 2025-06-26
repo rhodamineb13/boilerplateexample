@@ -15,8 +15,9 @@ type Task struct {
 	Description     string             `gorm:"type:varchar(255);not null"`
 	IsDone          bool               `gorm:"type:boolean;not null;default:false"`
 	Priority        enums.TaskPriority `gorm:"type:varchar(10);not null"`
+	DueDate         *time.Time         `gorm:"column:due_date;type:timestamp_tz;not null"`
 	CreatedAt       time.Time          `gorm:"not null;default:now()"`
 	UpdatedAt       time.Time          `gorm:"not null;default:now()"`
 	DeletedAt       time.Time          `gorm:"column:deleted_at"`
-	Employee        Employee           `gorm:"foreignKey:EmployeeId;constraint:OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Employee        Employee           `gorm:"foreignKey:EmployeeId"`
 }

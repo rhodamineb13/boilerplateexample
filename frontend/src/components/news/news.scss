@@ -1,0 +1,40 @@
+.news {
+  border-bottom: 1px solid grey;
+  padding-left: 20px;
+  height: 120px;
+  display: flex;
+  flex-direction: row;
+  gap: 60px;
+  margin-bottom: 15px;
+  align-items: center;
+}
+
+.news-text-title{
+  width: 650px;
+  h5:hover {
+    cursor: pointer !important;
+  }
+} 
+
+.news-text-subtitle {
+  width: 650px;
+}
+
+.news-image img {
+  height: 60px !important;
+  width: 120px !important;
+  object-fit: contain;
+}
+
+.news-text-published {
+  width: 650px;
+  text-align: right;
+  span {
+    font-size: 12px !important
+  }
+}
+
+.news-text-subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

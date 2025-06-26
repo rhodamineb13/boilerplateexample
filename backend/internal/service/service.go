@@ -3,7 +3,7 @@ package service
 import (
 	"backend/internal/config"
 	"backend/internal/models/dto"
-	"backend/internal/models/enums"
+	"backend/internal/models/entities"
 	"backend/internal/repository"
 	"backend/internal/utils/token"
 	"context"
@@ -16,8 +16,12 @@ type AdminService interface {
 	AssignTask(context.Context, dto.AssignTaskDTO) error
 	ListAllTasks(context.Context, dto.Pagination) (dto.PaginatedResponse[dto.Task], error)
 	RealLiveTrack(context.Context) error
-	GetEmployees(context.Context, *enums.EmployeeRole) ([]dto.EmployeeDTO, error)
+	GetUnassignedSurveyors(context.Context) ([]dto.EmployeeDTO, error)
 	Login(context.Context, dto.LoginDTO) (string, error)
+	GetAssignedSurveyors(context.Context) ([]dto.EmployeeDTO, error)
+	CreateNews(context.Context, dto.NewsRequestDTO) error
+	GetNews(context.Context) ([]dto.NewsResponseDTO, error)
+	GetLatestNews(context.Context) ([]dto.NewsResponseDTO, error)
 }
 
 type adminService struct {
@@ -57,23 +61,25 @@ func (s *adminService) ListAllTasks(ctx context.Context, pagination dto.Paginati
 		search = pagination.Search
 	}
 
-
 	total, tasksEntity, err := s.repository.ListTask(ctx, limit, page, search)
 	if err != nil {
 		return res, err
 	}
-
 	res.Limit = limit
 	res.Page = page
 	res.Total = total
 	res.Data = make([]dto.Task, len(tasksEntity))
 	for i := range tasksEntity {
+		fmt.Println(tasksEntity[i].EmployeeId, tasksEntity[i].Employee.Id, tasksEntity[i].Employee.Name)
 		task := dto.Task{
 			Id:            tasksEntity[i].Id,
+			EmployeeId:    tasksEntity[i].EmployeeId,
+			EmployeeName:  tasksEntity[i].Employee.Name,
 			ClientName:    tasksEntity[i].ClientName,
 			ClientAddress: tasksEntity[i].ClientAddress,
 			Latitude:      tasksEntity[i].ClientLatitude,
 			Longitude:     tasksEntity[i].ClientLongitude,
+			DueDate:       tasksEntity[i].DueDate,
 			Description:   tasksEntity[i].Description,
 			Priority:      tasksEntity[i].Priority,
 		}
@@ -87,8 +93,8 @@ func (s *adminService) RealLiveTrack(ctx context.Context) error {
 	return nil
 }
 
-func (s *adminService) GetEmployees(ctx context.Context, role *enums.EmployeeRole) ([]dto.EmployeeDTO, error) {
-	employeesEntity, err := s.repository.GetEmployees(ctx, role)
+func (s *adminService) GetUnassignedSurveyors(ctx context.Context) ([]dto.EmployeeDTO, error) {
+	employeesEntity, err := s.repository.GetUnassignedSurveyors(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -146,11 +152,94 @@ func (s *adminService) Login(ctx context.Context, req dto.LoginDTO) (string, err
 		return "", err
 	}
 
-	tok, err := token.GenerateJWTToken(req.Username)
+	emp, err := s.repository.FindEmployee(ctx, req.Username)
+	if err != nil {
+		return "", err
+	}
+
+	
+
+	tok, err := token.GenerateJWTToken(emp.Id)
+	fmt.Println(tok)
 
 	if err != nil {
 		return "", err
 	}
 
 	return tok, nil
+}
+
+func (s *adminService) GetAssignedSurveyors(ctx context.Context) ([]dto.EmployeeDTO, error) {
+	empsEntity, err := s.repository.FindAssignedSurveyor(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	emps := make([]dto.EmployeeDTO, len(empsEntity))
+	for i := range empsEntity {
+		emps[i] = dto.EmployeeDTO{
+			Id:   empsEntity[i].Id,
+			Name: empsEntity[i].Name,
+		}
+	}
+
+	return emps, nil
+}
+
+func (s *adminService) CreateNews(ctx context.Context, req dto.NewsRequestDTO) error {
+	newsEntity := &entities.News{
+		Title:      req.Title,
+		Subtitle:   req.Subtitle,
+		EmployeeId: req.EmployeeId,
+		Content:    req.Content,
+		ImageURL:   req.Image.Filename,
+		Image:      req.Image,
+	}
+	return s.repository.CreateNews(ctx, newsEntity)
+}
+
+func (s *adminService) GetNews(ctx context.Context) ([]dto.NewsResponseDTO, error) {
+	newsEntity, err := s.repository.GetNews(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := make([]dto.NewsResponseDTO, len(newsEntity))
+
+	for i := range newsEntity {
+		resp[i] = dto.NewsResponseDTO{
+			Id: newsEntity[i].Id,
+			Title: newsEntity[i].Title,
+			Subtitle: newsEntity[i].Subtitle,
+			Author: newsEntity[i].Employee.Name,
+			Content: newsEntity[i].Content,
+			CreatedAt: newsEntity[i].CreatedAt,
+			ImageURL: newsEntity[i].ImageURL,
+		}
+	}
+
+	return resp, nil
+}
+
+func (s *adminService) GetLatestNews(ctx context.Context) ([]dto.NewsResponseDTO, error) {
+	newsEntity, err := s.repository.GetLatestNews(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := make([]dto.NewsResponseDTO, len(newsEntity))
+
+	for i := range newsEntity {
+		resp[i] = dto.NewsResponseDTO{
+			Id: newsEntity[i].Id,
+			Title: newsEntity[i].Title,
+			Subtitle: newsEntity[i].Subtitle,
+			Author: newsEntity[i].Employee.Name,
+			Content: newsEntity[i].Content,
+			CreatedAt: newsEntity[i].CreatedAt,
+
+		}
+	}
+
+	return resp, nil
 }

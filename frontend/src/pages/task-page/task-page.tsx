@@ -1,32 +1,72 @@
 import React, { JSX, useEffect, useState } from 'react';
 import './task-page.scss'; // Assuming you have a CSS file for styling
-import { Pagination,  Table } from 'react-bootstrap';
-import { GetAllTasks } from '../../api/tasks';
+import { Dropdown, DropdownToggle, Pagination,  Table } from 'react-bootstrap';
+import { AssignTask, GetAllTasks } from '../../api/tasks';
 import { TaskDTO } from '../../models/dto/tasks_dto';
 import { PaginatedResponse } from '../../models/dto/paginated_dto';
+import { GetUnassignedSurveyors } from '../../api/employees';
+import { Employees } from '../../models/dto/employees_dto';
 
 export default function TaskPage(): JSX.Element {
-    const [tasks, setTasks] = useState<TaskDTO[]>([]); // Initialize as empty array
+    const [tasks, setTasks] = useState<TaskDTO[]>([]);
+    const [surveyors, setSurveyors] = useState<Employees[]>([]);
+    const [selectedSurveyorIds, setSelectedSurveyorIds] = useState<Record<string, string>>({});
     const [totalEntries, setTotalEntries] = useState<number>(0);
     const [page, setPage] = useState<number>(1);
     const [limit, setPageLimit] = useState<number>(10);
     const [search, setSearch] = useState<string>("");
 
-    useEffect(() => {
-        setPage(1)
-    }, [limit, search])
-
-    useEffect(() => {
-        GetAllTasks(limit, page, search).then((t : PaginatedResponse<TaskDTO>) => {
+    // Extracted fetchTasks so we can call it after assign
+    const fetchTasks = () => {
+        GetAllTasks(limit, page, search).then((t: PaginatedResponse<TaskDTO>) => {
             setTasks(t.data);
             setTotalEntries(t.total);
-            console.log(t)
         });
+    };
+
+    useEffect(() => setPage(1), [limit, search]);
+
+    useEffect(() => {
+        fetchTasks();
     }, [page, limit, search]);
 
+    useEffect(() => {
+        GetUnassignedSurveyors().then((sur: Employees[]) => setSurveyors(sur));
+    }, []);
+
+    const handleSelectSurveyor = (taskId: string, employeeId: string) => {
+        setSelectedSurveyorIds(prev => {
+            const next = { ...prev };
+            if (!employeeId) delete next[taskId];
+            else next[taskId] = employeeId;
+            return next;
+        });
+    };
+
+    const handleAssignTask = (taskId: string) => {
+        const employeeId = selectedSurveyorIds[taskId];
+        if (!employeeId) return;
+        AssignTask(taskId, employeeId)
+            .then(() => {
+                // clear selection for this task
+                setSelectedSurveyorIds(prev => {
+                    const next = { ...prev };
+                    delete next[taskId];
+                    return next;
+                });
+                // refresh tasks list
+                fetchTasks();
+            })
+            .catch(err => {
+                console.error('Failed to assign', err);
+            })
+            .finally(() => window.location.reload);
+    };
+
     const firstIndex = (page - 1) * limit + 1;
-    const lastIndex  = Math.min(page * limit, totalEntries);
+    const lastIndex = Math.min(page * limit, totalEntries);
     const totalPages = Math.ceil(totalEntries / limit);
+    
 
     const renderPaginationItems = () => {
         const items = [];
@@ -37,13 +77,13 @@ export default function TaskPage(): JSX.Element {
                 (num >= page - 2 && num <= page + 2)
             ) {
                 items.push(
-                <Pagination.Item
-                    key={num}
-                    active={num === page}
-                    onClick={() => setPage(num)}
-                >
-                    {num}
-                </Pagination.Item>
+                    <Pagination.Item
+                        key={num}
+                        active={num === page}
+                        onClick={() => setPage(num)}
+                    >
+                        {num}
+                    </Pagination.Item>
                 );
             } else if (num === page - 3 || num === page + 3) {
                 items.push(<Pagination.Ellipsis key={`e${num}`} disabled />);
@@ -51,8 +91,6 @@ export default function TaskPage(): JSX.Element {
         }
         return items;
     };
-
-    
 
     return (
         <>
@@ -136,8 +174,8 @@ export default function TaskPage(): JSX.Element {
                         <col style={{width: '15%'}} />
                         <col style={{width: '10%'}} />
                         <col style={{width: '10%'}} />
-                        <col style={{width: '12%'}} />
-                        <col style={{width: '13%'}} />
+                        <col style={{width: '15%'}} />
+                        <col style={{width: '10%'}} />
                         <col style={{width: '5%'}} />
                         </colgroup>
                         <thead>
@@ -154,20 +192,66 @@ export default function TaskPage(): JSX.Element {
                             </tr>
                         </thead>
                         <tbody>
-                            {tasks.map((task: TaskDTO, idx: number) => (
-                                <tr key={task.id}>
+                            {tasks.map((task: TaskDTO, idx: number) => {
+                                const selectedId = selectedSurveyorIds[task.id];
+                                const selectedName = selectedId
+                                    ? surveyors.find(s => s.id === selectedId)?.name
+                                    : undefined;
+                                const toggleText = task.employee_name || selectedName || 'Assign Employee';
+                                const hasSelection = !!selectedId;
+                                return (
+                                  <tr key={task.id}>
                                     <td>{firstIndex + idx}</td>
                                     <td>{task.description}</td>
                                     <td>{task.client_name}</td>
                                     <td>{task.client_address}</td>
                                     <td>{task.latitude}</td>
                                     <td>{task.longitude}</td>
-                                    <td> </td>
-                                    <td> </td>
+                                    <td>
+                                      {!task.employee_name && (
+                                        <>
+                                        <Dropdown onSelect={(eventKey: string | null) => handleSelectSurveyor(task.id, eventKey || '')}>
+                                          <DropdownToggle>{toggleText}</DropdownToggle>
+                                          <Dropdown.Menu>
+                                            <Dropdown.Item eventKey="">Assign Employee</Dropdown.Item>
+                                            {surveyors.map(sur => (
+                                              <Dropdown.Item key={sur.id} eventKey={sur.id}>
+                                                {sur.name}
+                                              </Dropdown.Item>
+                                            ))}
+                                          </Dropdown.Menu>
+                                        </Dropdown>
+                                        <div style={{display: 'flex', flexDirection: 'row', gap: '20px', marginTop: '6px'}}>
+                                            <div
+                                              className="hover-icon-save"
+                                              onClick={() => handleAssignTask(task.id)}
+                                              style={{ cursor: hasSelection ? 'pointer' : 'not-allowed' }}
+                                            >
+                                                <i
+                                                  className="fa-solid fa-save"
+                                                  style={{ color: hasSelection ? 'green' : 'lightgreen' }}
+                                                ></i>
+                                            </div>
+                                            <div
+                                              className="hover-icon-cancel"
+                                              onClick={() => handleSelectSurveyor(task.id, '')}
+                                            >
+                                                <i
+                                                  className="fa-solid fa-x"
+                                                  style={{ color: hasSelection ? 'red' : 'pink' }}
+                                                ></i>
+                                            </div>
+                                        </div>
+                                        </>
+                                      )}
+                                      {task.employee_name && task.employee_name}
+                                    </td>
+                                    <td>{task.due_date}</td>
                                     <td>{task.priority}</td>
-                                </tr>
-                                ))}
-                            </tbody>
+                                  </tr>
+                                );
+                            })}
+                        </tbody>
                     </Table>
                     <span>Showing {firstIndex} to {lastIndex} of {totalEntries} entries</span>
                     <div className='pagination d-flex justify-content-center mt-3'>

@@ -8,11 +8,11 @@ import (
 
 // TokenService defines the interface for token operations.
 type JWTClaims struct {
-	Username string
+	EmployeeId string
 	*jwt.RegisteredClaims
 }
 
-func NewJWTToken(username string) *JWTClaims {
+func NewJWTToken(EmployeeId string) *JWTClaims {
 	claims := &jwt.RegisteredClaims{
 		Issuer: "backend",
 		ExpiresAt: &jwt.NumericDate{
@@ -20,13 +20,13 @@ func NewJWTToken(username string) *JWTClaims {
 		},
 	}
 	return &JWTClaims{
-		Username:         username,
+		EmployeeId:       EmployeeId,
 		RegisteredClaims: claims,
 	}
 }
 
-func GenerateJWTToken(username string) (string, error) {
-	claims := NewJWTToken(username)
+func GenerateJWTToken(EmployeeId string) (string, error) {
+	claims := NewJWTToken(EmployeeId)
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	secretKey := []byte("your-secret-key")

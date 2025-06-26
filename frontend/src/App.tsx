@@ -9,9 +9,14 @@ import { useState, useEffect } from 'react';
 import Sidebar from './components/sidebar/sidebar';
 import TaskPage from './pages/task-page/task-page';
 import { ProtectedRoute } from './routes/protected_route';
-import EmployeesPage from './pages/employees/employees';
 import { APIProvider } from '@vis.gl/react-google-maps';
 import { ProfilePage } from './pages/profile/profile';
+import { useScrollToTop } from './hooks/window';
+import 'owl.carousel/dist/assets/owl.carousel.css'; {/* this line */}
+import 'owl.carousel/dist/assets/owl.theme.default.css';import { SurveyorPage } from './pages/surveyor/surveyor';
+ {/* this line */}
+
+
 
 
 function App() {
@@ -36,6 +41,8 @@ function App() {
       return () => window.removeEventListener('resize', handleResize)
   })
 
+  useScrollToTop()
+
   const combinedLogicCollapseSidebar : boolean = toggleCollapseSidebar || windowCollapseSidebar
 
   return (
@@ -51,6 +58,7 @@ function App() {
             transition: 'margin-left 0.3s ease'
           }}
         >
+          
           <Container fluid className="p-4">
             <Routes>
               <Route element={<ProtectedRoute />}>
@@ -58,8 +66,8 @@ function App() {
                 <Route path='/' element={<Navigate to={'/home'} />} />
                 <Route path='*' element={<NotFound />} />
                 <Route path='/tasks' element={<TaskPage />} />
-                <Route path='/employees' element={<EmployeesPage />} />
                 <Route path='/profile' element={<ProfilePage />} />
+                <Route path='/surveyors' element={<SurveyorPage />}/>
               </Route>
               <Route path='/login' element={<LoginPage />} />
             </Routes>

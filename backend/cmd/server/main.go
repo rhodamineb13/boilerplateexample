@@ -14,6 +14,8 @@ import (
 )
 
 func main() {
+	gin.SetMode(gin.DebugMode)
+
 	config.LoadEnv()
 	sqlDatabase.Connect(sqlDatabase.Postgres)
 	handler := handler.NewAdminHandler(service.NewAdminService(repository.NewAdminRepository(sqlDatabase.DB)))
@@ -40,17 +42,23 @@ func main() {
 	}))
 
 	r.POST("/login", handler.Login)
+	
 
 	// Define the API group after CORS middleware
 	a := r.Group("/api").Use(middleware.Auth())
 	{
-		a.POST("/tasks/assign-task", handler.AssignTask)
-		a.GET("/employees", handler.GetEmployees)
+		a.POST("/tasks/:id/assign-task", handler.AssignTask)
 		a.GET("/me", handler.Me)
 		a.GET("/tasks", handler.ListAllTasks)
 		a.POST("/logout", handler.Logout)
 		a.POST("/ws", handler.HandleWS)
 		a.POST("/location", handler.HandleSurveyorLocation)
+		a.GET("/surveyors/unassigned", handler.GetUnassignedSurveyors)
+		a.GET("/surveyors/assigned", handler.GetAssignedSurveyors)
+		a.POST("/news", handler.CreateNews)
+		a.GET("/news", handler.GetNews)
+		a.GET("/news/latest", handler.GetLatestNews)
+		a.Static("/uploads", "./uploads")
 	}
 
 	r.Run()
