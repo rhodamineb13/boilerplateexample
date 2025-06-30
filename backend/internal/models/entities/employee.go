@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"backend/internal/models/enums"
+	employeeRole "backend/internal/models/enums/employee_role"
 	"time"
 )
 
@@ -11,7 +11,7 @@ type Employee struct {
 	Username       string             `gorm:"type:varchar(32);not null;unique"`
 	Email          string             `gorm:"type:varchar(255);not null;unique"`
 	Password       string             `gorm:"type:text;not null"`
-	Role           enums.EmployeeRole `gorm:"type:varchar(32);not null"`
+	Role           employeeRole.EmployeeRole `gorm:"type:varchar(32);not null"`
 	DaysPermission int                `gorm:"column:days_permission;type:integer;not null;default:0"`
 	DaysAWOL       int                `gorm:"column:days_awol;type:integer;not null;default:0"`
 	DaysLate       int                `gorm:"column:days_late;type:integer;not null;default:0"`

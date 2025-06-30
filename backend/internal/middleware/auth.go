@@ -22,8 +22,10 @@ func Auth() gin.HandlerFunc {
 		}
 
 		uid := claims.EmployeeId
+		uname := claims.EmployeeUname
 
 		c.Set("employee_id", uid)
+		c.Set("employee_uname", uname)
 		c.Next()
 	}
 }

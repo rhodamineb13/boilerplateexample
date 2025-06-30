@@ -3,6 +3,7 @@ package handler
 import (
 	"backend/internal/models/dto"
 	"backend/internal/models/response"
+	"backend/internal/models/schema"
 	"backend/internal/service"
 	"fmt"
 	"log"
@@ -256,5 +257,57 @@ func (h *AdminHandler) GetNews(c *gin.Context) {
 }
 
 func (h *AdminHandler) GetLatestNews(c *gin.Context) {
+}
 
+func (h *AdminHandler) ChangePassword(c *gin.Context) {
+	var changePass dto.ChangePasswordDTO
+
+	if err := c.ShouldBind(&changePass); err != nil {
+		c.JSON(http.StatusBadRequest, response.Response{
+			StatusCode: http.StatusBadRequest,
+			Message:    "bad request",
+			Data:       nil,
+		})
+		return
+	}
+
+	employeeUname, ok := c.Get("employee_uname")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, response.Response{
+			StatusCode: http.StatusUnauthorized,
+			Message:    "you are unauthorized to make this request",
+			Data:       nil,
+		})
+		return
+	}
+
+	changePass.EmployeeUname = employeeUname.(string)
+
+	if err := h.service.ChangePassword(c, changePass); err != nil {
+		c.JSON(http.StatusUnauthorized, response.Response{
+			StatusCode: http.StatusUnauthorized,
+			Message:    "wrong password",
+			Data:       nil,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, response.Response{
+		StatusCode: http.StatusOK,
+		Message:    "password successfully changed",
+		Data:       nil,
+	})
+
+}
+
+func (h *AdminHandler) MasterFormElectronicFinancing(c *gin.Context) {
+	c.JSON(http.StatusOK, schema.MasterFormElectronicFinancing)
+}
+
+func (h *AdminHandler) MasterFormBusinessFinancing(c *gin.Context) {
+	c.JSON(http.StatusOK, schema.MasterFormBusinessFinancing)
+}
+
+func (h *AdminHandler) MasterFormVehicleFinancing(c *gin.Context) {
+	c.JSON(http.StatusOK, schema.MasterFormVehicleFinancing)
 }

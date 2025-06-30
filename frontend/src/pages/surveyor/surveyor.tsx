@@ -34,9 +34,10 @@ export function SurveyorPage() : JSX.Element {
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
+            {trackedSurveyor &&
             <div className="surveyor-map" style={{ width: "100%", height: "1000px" }}>
                 <MapContainer
-                center={[51.505, -0.09]}
+                center={[-6.19, 106.8]}
                 zoom={13}
                 scrollWheelZoom={false}
                 ref={mapRef}
@@ -47,7 +48,8 @@ export function SurveyorPage() : JSX.Element {
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
                 </MapContainer>
-            </div>
+            </div> 
+            }
             
         </div>
     )

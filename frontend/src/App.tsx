@@ -14,6 +14,7 @@ import { ProfilePage } from './pages/profile/profile';
 import { useScrollToTop } from './hooks/window';
 import 'owl.carousel/dist/assets/owl.carousel.css'; {/* this line */}
 import 'owl.carousel/dist/assets/owl.theme.default.css';import { SurveyorPage } from './pages/surveyor/surveyor';
+import { MasterForm } from './pages/master-form/master_form';
  {/* this line */}
 
 
@@ -22,6 +23,8 @@ import 'owl.carousel/dist/assets/owl.theme.default.css';import { SurveyorPage } 
 function App() {
   const location = useLocation();
   const hideSidebar = location.pathname === "/login";
+
+  const hideLayout = location.pathname.startsWith("/master-form")
 
   const [toggleCollapseSidebar, setToggleCollapseSidebar] = useState<boolean>(false);
   const [windowCollapseSidebar, setWindowCollapseSidebar] = useState<boolean>(false);
@@ -47,14 +50,13 @@ function App() {
 
   return (
       <div className="app-container">
-        <NavbarComponent onToggleSidebar={handleToggleCollapseSidebar} />
-
-        {!hideSidebar && <Sidebar collapsed={combinedLogicCollapseSidebar} />}
+        {!hideLayout && <NavbarComponent onToggleSidebar={handleToggleCollapseSidebar} />}
+        {!hideLayout && !hideSidebar && <Sidebar collapsed={combinedLogicCollapseSidebar} />}
 
         <div
           className="main-content flex-grow-1"
           style={{
-            marginLeft: hideSidebar ? '0' : (combinedLogicCollapseSidebar ? '60px' : '250px'),
+            marginLeft: !hideLayout ? (hideSidebar ? '0' : (combinedLogicCollapseSidebar ? '60px' : '250px')) : '0',
             transition: 'margin-left 0.3s ease'
           }}
         >
@@ -68,6 +70,9 @@ function App() {
                 <Route path='/tasks' element={<TaskPage />} />
                 <Route path='/profile' element={<ProfilePage />} />
                 <Route path='/surveyors' element={<SurveyorPage />}/>
+                <Route path='/master-form/electronics' element={<MasterForm by='electronics'/>} />
+                <Route path='/master-form/vehicle' element={<MasterForm by='vehicle'/>} />
+                <Route path='/master-form/business' element={<MasterForm by='business'/>} />
               </Route>
               <Route path='/login' element={<LoginPage />} />
             </Routes>

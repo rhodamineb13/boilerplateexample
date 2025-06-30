@@ -42,6 +42,11 @@ func main() {
 	}))
 
 	r.POST("/login", handler.Login)
+
+	masterForm := r.Group("/master-form")
+	masterForm.GET("/electronics", handler.MasterFormElectronicFinancing)
+	masterForm.GET("/business", handler.MasterFormBusinessFinancing)
+	masterForm.GET("/vehicle", handler.MasterFormVehicleFinancing)
 	
 
 	// Define the API group after CORS middleware
@@ -58,6 +63,7 @@ func main() {
 		a.POST("/news", handler.CreateNews)
 		a.GET("/news", handler.GetNews)
 		a.GET("/news/latest", handler.GetLatestNews)
+		a.PUT("/change-password", handler.ChangePassword)
 		a.Static("/uploads", "./uploads")
 	}
 

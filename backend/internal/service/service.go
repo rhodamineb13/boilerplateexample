@@ -4,6 +4,7 @@ import (
 	"backend/internal/config"
 	"backend/internal/models/dto"
 	"backend/internal/models/entities"
+	employeeRole "backend/internal/models/enums/employee_role"
 	"backend/internal/repository"
 	"backend/internal/utils/token"
 	"context"
@@ -22,6 +23,7 @@ type AdminService interface {
 	CreateNews(context.Context, dto.NewsRequestDTO) error
 	GetNews(context.Context) ([]dto.NewsResponseDTO, error)
 	GetLatestNews(context.Context) ([]dto.NewsResponseDTO, error)
+	ChangePassword(context.Context, dto.ChangePasswordDTO) error
 }
 
 type adminService struct {
@@ -114,14 +116,6 @@ func (s *adminService) GetUnassignedSurveyors(ctx context.Context) ([]dto.Employ
 }
 
 func (s *adminService) Login(ctx context.Context, req dto.LoginDTO) (string, error) {
-	// emp, err := s.repository.FindEmployee(ctx, req.Username)
-	// if err != nil {
-	// 	return "", err
-	// }
-
-	// if emp.Role == enums.Surveyor {
-	// 	return "", fmt.Errorf("wrong email or password")
-	// }
 
 	l, err := ldap.DialURL(fmt.Sprintf("ldap://%s:%s", "localhost", config.LDAP_PORT))
 	if err != nil {
@@ -157,9 +151,11 @@ func (s *adminService) Login(ctx context.Context, req dto.LoginDTO) (string, err
 		return "", err
 	}
 
-	
+	if emp.Role == employeeRole.Surveyor {
+		return "", fmt.Errorf("wrong email or password")
+	}
 
-	tok, err := token.GenerateJWTToken(emp.Id)
+	tok, err := token.GenerateJWTToken(emp.Id, emp.Username)
 	fmt.Println(tok)
 
 	if err != nil {
@@ -208,13 +204,13 @@ func (s *adminService) GetNews(ctx context.Context) ([]dto.NewsResponseDTO, erro
 
 	for i := range newsEntity {
 		resp[i] = dto.NewsResponseDTO{
-			Id: newsEntity[i].Id,
-			Title: newsEntity[i].Title,
-			Subtitle: newsEntity[i].Subtitle,
-			Author: newsEntity[i].Employee.Name,
-			Content: newsEntity[i].Content,
+			Id:        newsEntity[i].Id,
+			Title:     newsEntity[i].Title,
+			Subtitle:  newsEntity[i].Subtitle,
+			Author:    newsEntity[i].Employee.Name,
+			Content:   newsEntity[i].Content,
 			CreatedAt: newsEntity[i].CreatedAt,
-			ImageURL: newsEntity[i].ImageURL,
+			ImageURL:  newsEntity[i].ImageURL,
 		}
 	}
 
@@ -231,15 +227,55 @@ func (s *adminService) GetLatestNews(ctx context.Context) ([]dto.NewsResponseDTO
 
 	for i := range newsEntity {
 		resp[i] = dto.NewsResponseDTO{
-			Id: newsEntity[i].Id,
-			Title: newsEntity[i].Title,
-			Subtitle: newsEntity[i].Subtitle,
-			Author: newsEntity[i].Employee.Name,
-			Content: newsEntity[i].Content,
+			Id:        newsEntity[i].Id,
+			Title:     newsEntity[i].Title,
+			Subtitle:  newsEntity[i].Subtitle,
+			Author:    newsEntity[i].Employee.Name,
+			Content:   newsEntity[i].Content,
 			CreatedAt: newsEntity[i].CreatedAt,
-
 		}
 	}
 
 	return resp, nil
+}
+
+func (s *adminService) ChangePassword(ctx context.Context, req dto.ChangePasswordDTO) error {
+	l, err := ldap.DialURL(fmt.Sprintf("ldap://%s:%s", "localhost", config.LDAP_PORT))
+	if err != nil {
+		return err
+	}
+
+	if err := l.Bind(config.LDAP_BIND, config.LDAP_PASSWORD); err != nil {
+		return err
+	}
+
+	defer l.Close()
+
+	filter := fmt.Sprintf("(&(objectClass=posixAccount)(uid=%s))", req.EmployeeUname)
+
+	reqLDAP := ldap.NewSearchRequest(config.LDAP_SEARCH_DN, ldap.ScopeWholeSubtree, 0, 0, 0, false, filter, []string{"cn", "dn", "uid", "givenName", "sn"}, nil)
+	res, err := l.Search(reqLDAP)
+	if err != nil {
+		return err
+	}
+
+	if len(res.Entries) != 1 {
+		return err
+	}
+
+	userDN := res.Entries[0].DN
+
+	if err := l.Bind(userDN, req.CurrentPassword); err != nil {
+		return err
+	}
+
+	pmr := ldap.NewPasswordModifyRequest(req.EmployeeUname, req.CurrentPassword, req.NewPassword)
+
+	_, err = l.PasswordModify(pmr)
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }

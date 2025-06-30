@@ -2,7 +2,7 @@ package repository
 
 import (
 	"backend/internal/models/entities"
-	"backend/internal/models/enums"
+	employeeRole "backend/internal/models/enums/employee_role"
 	"context"
 	"io"
 	"os"
@@ -93,7 +93,7 @@ func (r *adminRepository) GetUnassignedSurveyors(ctx context.Context) ([]entitie
 			// join only non‐deleted tasks
 			"LEFT JOIN tasks ON tasks.employee_id = employees.id",
 		).
-		Where("employees.role = ?", enums.Surveyor).
+		Where("employees.role = ?", employeeRole.Surveyor).
 		Where("tasks.employee_id IS NULL"). // no task assigned
 		Find(&surveyors).Error
 
@@ -116,7 +116,7 @@ func (r *adminRepository) FindAssignedSurveyor(ctx context.Context) ([]entities.
 		Joins(
 			"LEFT JOIN tasks ON tasks.employee_id = employees.id",
 		).
-		Where("employees.role = ?", enums.Surveyor).
+		Where("employees.role = ?", employeeRole.Surveyor).
 		Where("tasks.employee_id IS NOT NULL").
 		Find(&surveyors).Error
 
