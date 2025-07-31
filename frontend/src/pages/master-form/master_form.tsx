@@ -1,7 +1,10 @@
-import { JSX, useEffect, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { FormSchema } from "../../models/dto/master_form";
 import { GetMasterForm } from "../../api/master_form";
 import { Button, Pagination } from "react-bootstrap";
+import { ConvertToFormField } from "../../utils/form_field";
+
+type FormValue = string | number | File | boolean | undefined
 
 interface MasterFormProps {
     by : string
@@ -12,7 +15,7 @@ export function MasterForm(props : MasterFormProps) : JSX.Element {
     const [currPage, setCurrPage] = useState<number>(1);
     const [prevPage, setPrevPage] = useState<number | null>(null);
     const [nextPage, setNextPage] = useState<number | null>(0);
-    const [mapForm, setMapForm] = useState(new Map<string, any>());
+    const [mapForm, setMapForm] = useState(new Map<string, FormValue>());
 
     useEffect(() => {
         setMapForm(new Map());
@@ -28,8 +31,10 @@ export function MasterForm(props : MasterFormProps) : JSX.Element {
     const handleChange = (key : string, value : any) => {
         const newMap : Map<string, any> = new Map(mapForm);
         newMap.set(key, value)
+        console.log(key, value)
         setMapForm(newMap);
     }
+
 
     console.log(mapForm);
 
@@ -43,18 +48,10 @@ export function MasterForm(props : MasterFormProps) : JSX.Element {
             <h1 style={{textAlign: 'center', textTransform: 'uppercase'}}>{formData?.title}</h1>
             <div className="form-data" style={{marginTop: '60px'}}>
                 <ol start={cumulativePrevLength[currPage-1]+1}>
-                    {formData?.fields[currPage-1].map((form) =>
+                    {formData?.fields[currPage-1].map((form, idx) =>
                     <li key={form.label}>
-                        <div>
-                            <p>{form.name}</p>
-                            {form.type !== "file" ? <input value={mapForm.get(form.label)} type={form.type} onChange={(e) => handleChange(form.label, e.target.value)}/> : 
-                            <input type={form.type} accept="image/*" capture={form.capture!} onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                    handleChange(form.label, file);
-                                }
-                            }}/>
-                            }
+                        <div className={`form-${idx}`} style={{marginBottom: '10px'}}>
+                            {ConvertToFormField(form, handleChange, mapForm.get(form.label))}
                         </div>
                     </li>
                     )}
